@@ -1,3 +1,6 @@
 from django.contrib import admin
+from Etudiant.models import Etudiant
 
-# Register your models here.
+@admin.register(Etudiant)
+class EtudiantAdmin(admin.ModelAdmin):
+    list_display = ('matricule', 'nom', 'prenom', 'CIN', 'date_naissance', 'groupe')
