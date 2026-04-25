@@ -5,41 +5,59 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" type="text/css" href="{% static "styles/style.css" %}">
-    <script defer type="text/js" href="{% static "scripts/script.js" %}" ></script>
+    <link rel="stylesheet" href="{% static 'styles/style.css' %}">
 </head>
 <body>
-    
-    <main>
-        <div class="flex_container" id="container">
-            
-            <div class="form-container sign_up">
-                <h3>Etudiant </h3>
-                <form method="POST" action="{% url "login" %}"></form>
-                {% csrf_token %}
-                {{Etudiant_login.as_p}}
-                <button type="submit">login </button>
+    <div class="container   " id="container">
+
+        <!-- login etudiant -->
+        <div class="form-box etudiant">
+            <form action="">
+                <h1>Bonjour Cher etudiant</h1>
+                {{etudiant_form.as_p}}
+                <button type="submit" class="btn">Login</button>
+            </form>
+        </div>
+
+        <!-- login professeur -->
+        <div class="form-box professeur">
+            <form action="">
+                <h1>Bonjour Monsieur</h1>
+                {{professeur_form.as_p}}
+                <button type="submit" class="btn">Login</button>
+            </form>
+        </div>
+
+        <!-- toggle box -->
+        <div class="toggle-box">
+            <!-- toggle left -->
+            <div class="toggle-pannel left">
+                <h1>Professeur</h1>
+                <p>Vous êtes un étudiant ?</p>
+                <button class="btn professeur-btn">Étudiant</button>
             </div>
-            <div class="form-container sign_in">
-                <h3>Professeur</h3>
-                <form method="POST" action="{% url "login" %}"></form>
-                {% csrf_token %}
-                {{Professeur_login.as_p}}
-                <button type="submit">login </button>
-            </div>
-            <div class="toggle-container">
-                
-                <div class="toggle">
-                    <div class="toggle-panel toggle-left">
-                        <button class="hidden" id="login">Sign in </button>
-                    </div>
-                    <div class="toggle-panel toggle-right">
-                        <button class="hidden" id="registre">Sign up </button>
-                    </div>
-                </div>
-                
+            <!-- toggle right -->
+            <div class="toggle-pannel right">
+                <h1>Étudiant</h1>
+                <p>Vous êtes un professeur ?</p>
+                <button class="btn etudiant-btn">Professeur</button>
             </div>
         </div>
-    </main>
+
+    </div>
+
+    <script>
+        const container = document.querySelector('.container');
+        const profBtn = document.querySelector('.professeur-btn');
+        const etuBtn = document.querySelector('.etudiant-btn');
+
+        profBtn.addEventListener('click', () => {
+            container.classList.add('active');
+        });
+
+        etuBtn.addEventListener('click', () => {
+            container.classList.remove('active');
+        });
+    </script>
 </body>
 </html>
