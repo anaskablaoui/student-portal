@@ -19,7 +19,7 @@ from django.urls import include, path
 from authApp import views
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('',include('authApp.urls')),
-   
-    
+    path('', include('authApp.urls')),
+    path('professeur/', include('Professeur.urls')),
+    path('etudiant/', include('Etudiant.urls')),
 ]

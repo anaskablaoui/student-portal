@@ -1,11 +1,12 @@
-const containerEl = document.getElementById('container');
-const registreBtn =document.getElementById('registre');
-const loginBtm=document.getElementById('login');
+const container = document.querySelector('.container');
+const profButn= document.querySelector('.professeur-btn');
+const etuBtx = document.querySelector('.etudiant-btn');
 
-registreBtn.addEventListener('click',()=> 
-    containerEl.classList.add("active"),
-)
+profButn.addEventListener('click',()=>{
+    container.classList.add('active');
+})
 
-loginBtm.addEventListener('click',()=> 
-    containerEl.classList.remove("active"),
-)
+etuBtx.addEventListener('click',()=>
+{
+    container.classList.remove('active')
+})

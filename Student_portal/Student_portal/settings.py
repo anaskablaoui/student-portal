@@ -126,3 +126,9 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 STATICFILESDIRS=(os.path.join(BASE_DIR,'static'))
+
+AUTHENTICATION_BACKENDS = [
+    'authApp.backends.EtudiantBackend',
+    'authApp.backends.ProfesseurBackend',
+    'django.contrib.auth.backends.ModelBackend',  # pour l'admin
+]

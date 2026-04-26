@@ -62,6 +62,7 @@ class Rapport(models.Model):
     etudiant=models.ForeignKey(Etudiant,on_delete=models.CASCADE,null=False)
     description=models.CharField(max_length=200)
     professeur=models.ForeignKey(Professeur,on_delete=models.CASCADE,null=False)
+    
 
     def __str__(self):
         return super().__str__()
