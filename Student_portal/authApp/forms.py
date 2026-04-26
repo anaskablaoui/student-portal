@@ -3,7 +3,6 @@ from Professeur.models import Professeur
 from Etudiant.models import Etudiant
 
 
-
 class ProfesseurLoginForm(forms.ModelForm):
     matricule=forms.CharField(widget=forms.TextInput,label="type matricule")
     password=forms.CharField(widget=forms.PasswordInput,label="type password")
@@ -17,5 +16,5 @@ class EtudiantLoginForm(forms.ModelForm):
     password=forms.CharField(widget=forms.PasswordInput,label='type password')
     
     class Meta:
-        model= Professeur
+        model= Etudiant
         fields =['matricule','password']
