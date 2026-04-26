@@ -13,7 +13,7 @@
         <!-- login etudiant -->
         <div class="form-box etudiant">
             <form action="">
-                <h1>Bonjour Cher etudiant</h1>
+                <h1>Bonjour Monsieur</h1>
                 {{professeur_form.as_p}}
                 
                 <button type="submit" class="btn">Login</button>
@@ -24,7 +24,8 @@
         <div class="form-box professeur">
             <form action="">
                 <h1>Bonjour Monsieur</h1>
-                {{etudiant_form.as_p}}
+                {{professeur_form.as_p}}
+                
                 <button type="submit" class="btn">Login</button>
             </form>
         </div>
