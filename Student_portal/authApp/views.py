@@ -31,7 +31,7 @@ def login_view(request):
                 user = authenticate(request, matricule=matricule, password=password)
                 if user is not None:
                     login(request, user)
-                    return redirect("professeur_dashboard")  # → Professeur/views.py
+                    return redirect("Professeur:dashboard")  # → Professeur/views.py
                 else:
                     error = "Matricule ou mot de passe incorrect"
 
@@ -53,4 +53,4 @@ def professeurLogout_view(request):
     if request.method == "POST":
         logout(request)
         return redirect('login')
-    return redirect('professeur_dashboard')
+    return redirect('professeur:dashboard')
