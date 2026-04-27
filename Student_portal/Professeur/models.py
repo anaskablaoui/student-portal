@@ -10,6 +10,7 @@ class Professeur(AbstractUser):
     prenom=models.CharField(max_length=50,unique=False)
     CIN=models.CharField(max_length=50,unique=True)
 
+    USERNAME_FIELD = 'matricule'
     class Meta:
         verbose_name= 'Professuer'
         verbose_name_plural='Professeurs'
