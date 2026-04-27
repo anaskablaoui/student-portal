@@ -20,6 +20,6 @@ from authApp import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('authApp.urls')),
-    path('professeur/', include('Professeur.urls')),
+    path('professeur/', include('Professeur.urls',namespace='professeur')),
     path('etudiant/', include('Etudiant.urls')),
 ]
