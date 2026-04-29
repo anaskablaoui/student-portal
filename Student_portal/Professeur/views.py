@@ -6,4 +6,4 @@ from authApp.forms import EtudiantLoginForm, ProfesseurLoginForm
 from .models import Rapport,Message
 
 def dashboard(request):
-    return render(request, 'professeur/index.html')
+    return render(request, 'index.html')

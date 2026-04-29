@@ -12,7 +12,7 @@
 
         <!-- login etudiant -->
         <div class="form-box etudiant">
-            <form action="{% url 'login' %}" method="POST">
+            <form action="{% url 'dashboard' %}" method="POST">
                 <h1>Bonjour Monsieur</h1>
                 {{professeur_form.as_p}}
                 
@@ -22,7 +22,7 @@
 
         <!-- login professeur -->
         <div class="form-box professeur">
-            <form action="{% url 'login' %}">
+            <form action="{% url 'dashboard' %}">
                 <h1>Bonjour Etudiant</h1>
                 {{professeur_form.as_p}}
                 

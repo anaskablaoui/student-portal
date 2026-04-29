@@ -54,4 +54,4 @@ def professeurLogout_view(request):
     if request.method == "POST":
         logout(request)
         return redirect('login')
-    return redirect('professeur:dashboard')
+    return redirect('dashboard')

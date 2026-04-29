@@ -5,6 +5,7 @@ from django.contrib.auth.models import AbstractUser,Group,Permission
 
 # Create your models here.
 class Professeur(AbstractUser):
+    username=None
     matricule=models.CharField(max_length=10,unique=True,primary_key=True)
     nom=models.CharField(max_length=50,unique=False)
     prenom=models.CharField(max_length=50,unique=False)

@@ -1,12 +1,14 @@
+
 <!DOCTYPE html>
+{% load static %}
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
-    <link rel="stylesheet" href={% static "stylesProfesseur/style.css" %}>
-    <script defer src={% static "scriptProfesseur/script.js" %} ></script>
-</head> 
+    <link rel="stylesheet" href="{% static 'stylesProfesseur/style.css' %}">
+    <script defer src="{% static 'scriptProfesseur/script.js' %}"></script>
+</head>
 <body>
     <aside class="sidebar">
         <h2 class="profil">Bonjour Monsieur</h2>
