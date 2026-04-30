@@ -19,13 +19,13 @@ class customUserManager(BaseUserManager):
     def create_user(self, email=None, matricule=None, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', False)
         extra_fields.setdefault('is_superuser', False)
-        return self._create_user(matricule, email, password, **extra_fields)
+        return self._create_user(matricule=matricule, email=email, password=password, **extra_fields)
 
-    def create_superuser(self, matricule, password=None, **extra_fields):
+    def create_superuser(self, matricule, email=None,password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('role', 'administrateur')
-        return self._create_user(None, matricule=matricule, password=password, **extra_fields)
+        return self._create_user( matricule=matricule,email=email, password=password, **extra_fields)
 
 
 
@@ -37,7 +37,7 @@ class custumUser(AbstractUser):
         ('administrateur','Administrateur'),
         ('professeur','Professeur')
     ]
-    email      = models.EmailField(max_length=50, unique=True, blank=True)
+    email      = models.EmailField(max_length=50, unique=True, blank=True,null=True)
     matricule  = models.CharField(max_length=12, unique=True, blank=True)
     nom        = models.CharField(max_length=50)
     prenom     = models.CharField(max_length=50)

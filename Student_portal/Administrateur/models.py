@@ -22,7 +22,7 @@ class Administrateur(models.Model):
 class Filier(models.Model):
     id = models.AutoField(primary_key=True)
     nom = models.CharField(max_length=50, unique=True)
-    modules = models.ManyToManyField('Module', related_name='filieres')
+    
 
     def __str__(self):
         return self.nom
