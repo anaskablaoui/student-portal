@@ -2,6 +2,10 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from .forms import EtudiantLoginForm, ProfesseurLoginForm
+from .models import custumUser
+from Professeur.models import Professeur
+from Etudiant.models import Etudiant
+
 
 def login_view(request):
     etudiant_form = EtudiantLoginForm()
@@ -17,7 +21,7 @@ def login_view(request):
                 matricule = etudiant_form.cleaned_data["matricule"]
                 password  = etudiant_form.cleaned_data["password"]
                 user = authenticate(request, matricule=matricule, password=password)
-                if user is not None:
+                if user is not None and user.role=='etudiant':
                     login(request, user)
                     return redirect("etudiant_dashboard")  # → Etudiant/views.py
                 else:
@@ -29,7 +33,7 @@ def login_view(request):
                 matricule = professeur_form.cleaned_data["matricule"]
                 password  = professeur_form.cleaned_data["password"]
                 user = authenticate(request, matricule=matricule, password=password)
-                if user is not None:
+                if user is not None and user.role=='professeur':
                     login(request, user)
                     print("test")
                     return redirect("Professeur:dashboard")  # → Professeur/views.py

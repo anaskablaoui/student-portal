@@ -2,38 +2,18 @@ from django.db import models
 from Administrateur.models import Session,Matiere
 from Etudiant.models import Etudiant
 from django.contrib.auth.models import AbstractUser,Group,Permission
+from authApp.models import custumUser
 
 # Create your models here.
-class Professeur(AbstractUser):
-    username=None
-    matricule=models.CharField(max_length=10,unique=True,primary_key=True)
-    nom=models.CharField(max_length=50,unique=False)
-    prenom=models.CharField(max_length=50,unique=False)
+class Professeur(models.Model):
+    user = models.OneToOneField(custumUser, on_delete=models.CASCADE)
     CIN=models.CharField(max_length=50,unique=True)
 
-    USERNAME_FIELD = 'matricule'
     class Meta:
         verbose_name= 'Professuer'
         verbose_name_plural='Professeurs'
     
-    #redifinition des relation pour eviter les conflits
-    groups=models.ManyToManyField(
-        Group,
-        related_name="professeur_groups",
-        related_query_name="professeur",
-        blank=True,
-        verbose_name='groups',
-        help_text='the groups this user belongs to'
-    )
     
-    user_permissions=models.ManyToManyField(
-        Permission,
-        related_name="professeur_permission",
-        related_query_name="professeur",
-        blank=True,
-        verbose_name='professeur permissions',
-        help_text='Specific permissions for this user'
-    )
     def __str__(self):
         return self.nom
     

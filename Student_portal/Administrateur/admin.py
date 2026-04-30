@@ -5,7 +5,16 @@ from Administrateur.models import Administrateur, Module, Filier, Groupe, Matier
 
 @admin.register(Administrateur)
 class AdministrateurAdmin(admin.ModelAdmin):
-    list_display = ('matricule', 'nom', 'prenom')
+    list_display = ['get_matricule', 'get_nom', 'get_prenom']
+
+    def get_matricule(self, obj):
+        return obj.user.matricule
+
+    def get_nom(self, obj):
+        return obj.user.nom
+
+    def get_prenom(self, obj):
+        return obj.user.prenom
 
 @admin.register(Module)
 class ModuleAdmin(admin.ModelAdmin):

@@ -130,7 +130,8 @@ STATICFILES_DIRS = [
 ]
 
 AUTHENTICATION_BACKENDS = [
-    'authApp.backends.EtudiantBackend',
-    'authApp.backends.ProfesseurBackend',
     'django.contrib.auth.backends.ModelBackend',  
 ]
+
+
+AUTH_USER_MODEL = 'authApp.custumUser'
