@@ -14,8 +14,6 @@ class Professeur(models.Model):
         verbose_name_plural='Professeurs'
     
     
-    def __str__(self):
-        return self.nom
     
 class presence(models.Model):
     id=models.IntegerField(unique=True,primary_key=True)
