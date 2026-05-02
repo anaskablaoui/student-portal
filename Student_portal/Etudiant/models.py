@@ -13,4 +13,4 @@ class Etudiant(models.Model):
     
 
     def __str__(self):
-        return self.nom
+        return f"{self.user.nom} {self.user.prenom}"

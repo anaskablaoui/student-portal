@@ -5,17 +5,17 @@ from authApp.models import custumUser
 
 
 class EtudiantCreationForm(forms.ModelForm):
-    # Champs du customUser
-    nom            = forms.CharField(label="Nom")
-    prenom         = forms.CharField(label="Prénom")
-    email          = forms.EmailField(label="Email", required=False)
-    matricule      = forms.CharField(label="Matricule")
-    password1      = forms.CharField(label="Mot de passe", widget=forms.PasswordInput)
-    password2      = forms.CharField(label="Confirmer mot de passe", widget=forms.PasswordInput)
+    # champs du customUser
+    nom = forms.CharField(label="Nom")
+    prenom = forms.CharField(label="Prénom")
+    email = forms.EmailField(label="Email", required=False)
+    password1 = forms.CharField(label="Mot de passe", widget=forms.PasswordInput)
+    password2 = forms.CharField(label="Confirmer mot de passe", widget=forms.PasswordInput)
+    matricule = forms.CharField(label="Matricule")
 
     class Meta:
-        model  = Etudiant
-        fields = ['CIN', 'date_naissance', 'groupe']
+        model = Etudiant
+        fields = ['CIN', 'date_naissance', 'groupe']  # only Etudiant's own fields
 
     def clean(self):
         cleaned_data = super().clean()
@@ -26,14 +26,14 @@ class EtudiantCreationForm(forms.ModelForm):
         return cleaned_data
 
     def save(self, commit=True):
-        # Créer le customUser avec le rôle 'etudiant'
+        # create the customUser with role 'etudiant'
         user = custumUser.objects.create_user(
-            nom       = self.cleaned_data['nom'],
-            prenom    = self.cleaned_data['prenom'],
-            email     = self.cleaned_data.get('email', ''),
-            matricule = self.cleaned_data['matricule'],
-            password  = self.cleaned_data['password1'],
-            role      = 'etudiant'
+            nom=self.cleaned_data['nom'],
+            prenom=self.cleaned_data['prenom'],
+            email=self.cleaned_data.get('email', ''),
+            matricule=self.cleaned_data['matricule'],
+            password=self.cleaned_data['password1'],
+            role='etudiant'
         )
 
         etudiant = super().save(commit=False)
@@ -44,6 +44,21 @@ class EtudiantCreationForm(forms.ModelForm):
 
 
 class EtudiantChangeForm(forms.ModelForm):
+    # these live on customUser, not Etudiant, so we declare them manually
+    matricule = forms.CharField(label="Matricule")
+    nom = forms.CharField(label="Nom")
+    prenom = forms.CharField(label="Prénom")
+    email = forms.EmailField(label="Email", required=False)
+
     class Meta:
-        model  = Etudiant
-        fields = '__all__'
+        model = Etudiant
+        fields = ('user', 'CIN', 'date_naissance', 'groupe')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # pre-fill user fields from the related customUser
+        if self.instance and self.instance.pk:
+            self.fields['matricule'].initial = self.instance.user.matricule
+            self.fields['nom'].initial = self.instance.user.nom
+            self.fields['prenom'].initial = self.instance.user.prenom
+            self.fields['email'].initial = self.instance.user.email
