@@ -58,8 +58,8 @@ class Salle(models.Model):
         return f"Salle {self.num}"
 
 class Session(models.Model):
-    id = models.AutoField(primary_key=True)
     matiere = models.ForeignKey(Matiere, on_delete=models.CASCADE)
+    groupe = models.ForeignKey(Groupe, on_delete=models.CASCADE, null=True, blank=True)
     date = models.DateField()
     heure_depart = models.TimeField()
     heure_fin = models.TimeField()

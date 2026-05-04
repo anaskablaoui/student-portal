@@ -36,24 +36,7 @@
             <p class="panel-title">Absences</p>
             <div class="absence-content">
                 <div class="card seance">
-                    <div class="seance-item">
-                        <label>Matière</label>
-                        <select>
-                            
-                        </select>
-                    </div>
-                    <div class="seance-item">
-                        <label>Groupe</label>
-                        <select>
-                            
-                        </select>
-                    </div>
-                    <div class="seance-item">
-                        <label>Date</label>
-                        <input type="date" value="2026-04-26">
-                    </div>
-                    <button class="btn-valider">Valider</button>
-                </div>
+                    
                 <div class="card tableau">
                     <table>
                         <thead>
@@ -65,7 +48,14 @@
                             </tr>
                         </thead>
                         <tbody>
-                            
+                            {% for etudiant in etudiants %}
+                                <tr>
+                                    <td>{{ etudiant.user.nom }} {{ etudiant.user.prenom }}</td>
+                                    <td>{{ session.matiere }}</td>
+                                    <td>{{ session.date }}</td>
+                                    <td>{{ form.status }}</td>
+                                </tr>
+                            {% endfor %}
                         </tbody>
                     </table>
                 </div>
@@ -89,10 +79,15 @@
                 <div class="card tableau">
                     <table>
                         <thead>
-                            <tr><th>Étudiant</th><th>Note /20</th><th>Mention</th></tr>
+                            <tr><th>Étudiant</th><th>Note /20</th></tr>
                         </thead>
                         <tbody>
-                            
+                            {% for etudiant in noteEtudiants %}
+                                <tr>
+                                    <td>{{ etudiant.user.nom }} {{ etudiant.user.prenom }}</td>
+                                    <td>{{ noteForm.note }}</td>
+                                </tr>
+                            {% endfor %}
                         </tbody>
                     </table>
                 </div>
@@ -101,18 +96,28 @@
 
         <!-- Message / Rapport -->
         <article id="rapport" class="panel">
-            <p class="panel-title">Message / Rapport</p>
+
             <div class="rapport-content">
                 <div class="card message">
-                   
+                    <h1>Rapport</h1>
+                   <form method="post" action="">
+                    {% csrf_token %}
+                    {{ rapportForm.as_p }}
+                    <button type="submit" name="submit_rapport">Envoyer</button>
+                    </form>
                 </div>
                 <div class="card rapport-list">
-                    
+                    <h1>Messages</h1>
+                    <form method="post" action="">
+                    {% csrf_token %}
+                    {{ messageForm.as_p }}
+                    <button type="submit" name="submit_message">Envoyer</button>
+                    </form>
                 </div>
             </div>
         </article>
     </main>
 
-    <script src="script.js"></script>
+    <script src="{% static 'scriptProfesseur/script.js' %}"></script>
 </body>
 </html>
