@@ -112,7 +112,7 @@ class messageForm(forms.Form):
     
     
 class noteForm(forms.Form):
-    note = forms.DecimalField(label='Note', max_digits=2, decimal_places=2, widget=forms.NumberInput(attrs={
+    note = forms.DecimalField(label='Note', max_digits=4, decimal_places=2, widget=forms.NumberInput(attrs={
         'class': 'form-control',
         'placeholder': 'Entrez la note (ex: 15.5)',
         'min': 0,

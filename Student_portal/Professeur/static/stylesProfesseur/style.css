@@ -366,3 +366,8 @@ tr:last-child td { border-bottom: none; }
     color: #888;
     margin-top: 3px;
 }
+
+#calendar {
+    max-width: 900px;
+    margin: 20px auto;
+}

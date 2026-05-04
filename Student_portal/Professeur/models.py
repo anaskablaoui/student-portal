@@ -16,38 +16,40 @@ class Professeur(models.Model):
     
     
 class absence(models.Model):
-    id=models.IntegerField(unique=True,primary_key=True)
-    seance=models.ForeignKey(Session,on_delete=models.CASCADE,null=False)
-    status=models.BooleanField(default=False)
-    etudiant=models.ForeignKey(Etudiant,on_delete=models.CASCADE,null=False)
+    id = models.AutoField(primary_key=True)
+    seance = models.ForeignKey(Session, on_delete=models.CASCADE)
+    status = models.BooleanField(default=False)
+    etudiant = models.ForeignKey(Etudiant, on_delete=models.CASCADE)
 
     def __str__(self):
-        return str(self.id)
+        return f"Absence {self.id} - {self.etudiant}"
 
 
 class Message(models.Model):
-    id=models.IntegerField(unique=True,primary_key=True)
-    description=models.CharField(max_length=200)
+    id = models.AutoField(primary_key=True)
+    description = models.CharField(max_length=200)
 
     def __str__(self):
-        return super().__str__()
+        return self.description
+
 
 class Rapport(models.Model):
-    id=models.IntegerField(unique=True,primary_key=True)
-    etudiant=models.ForeignKey(Etudiant,on_delete=models.CASCADE,null=False)
-    description=models.CharField(max_length=200)
-    professeur=models.ForeignKey(Professeur,on_delete=models.CASCADE,null=False)
-    date=models.DateField()
+    id = models.AutoField(primary_key=True)
+    etudiant = models.ForeignKey(Etudiant, on_delete=models.CASCADE)
+    description = models.CharField(max_length=200)
+    professeur = models.ForeignKey(Professeur, on_delete=models.CASCADE)
+    date = models.DateField()
 
     def __str__(self):
-        return super().__str__()
+        return f"Rapport {self.id} - {self.etudiant}"
+
 
 class Note(models.Model):
-    id=models.IntegerField(unique=True,primary_key=True)
-    note=models.DecimalField(max_digits=2,decimal_places=2)
-    matiere=models.ForeignKey(Matiere,on_delete=models.CASCADE,null=False)
-    etudiant=models.ForeignKey(Etudiant,on_delete=models.CASCADE,null=False)
+    id = models.AutoField(primary_key=True)
+    note = models.DecimalField(max_digits=4, decimal_places=2)
+    matiere = models.ForeignKey(Matiere, on_delete=models.CASCADE)
+    etudiant = models.ForeignKey(Etudiant, on_delete=models.CASCADE)
 
     def __str__(self):
-        return super().__str__()
+        return f"Note {self.note} - {self.etudiant}"
 

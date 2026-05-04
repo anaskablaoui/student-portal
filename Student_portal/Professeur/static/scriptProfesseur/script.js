@@ -23,3 +23,20 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 });
+//full calendar code
+document.addEventListener('DOMContentLoaded', function () {
+
+    const calendarEl = document.getElementById('calendar');
+
+    const calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        events: '/professeur/sessions-json/', // make sure URL is correct
+    });
+
+    calendar.render();
+
+    // 🔥 VERY IMPORTANT FIX
+    setTimeout(() => {
+        calendar.updateSize();
+    }, 500);
+});

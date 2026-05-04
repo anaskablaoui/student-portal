@@ -1,55 +1,130 @@
-from django.shortcuts import render,redirect
-from django.contrib.auth import authenticate, login, logout
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.views import View
-from .forms import RapportForm,absenceForm,messageForm,noteForm
-from .models import Professeur, Rapport,Message
+from django.contrib import messages
+from .forms import RapportForm, absenceForm, messageForm, noteForm
+from .models import Professeur, Rapport, Message, absence, Note
 from Etudiant.models import Etudiant
 from django.views.generic import ListView
 from Administrateur.models import Session
-
+from datetime import datetime
+from django.http import JsonResponse
 
 
 @login_required(login_url='login')
 def dashboard(request):
-    form=absenceForm()
-    rapportForm=RapportForm()
-    mForm=messageForm()
-    NoteForm=noteForm()
+    if request.user.role != 'professeur':
+        messages.error(request, "Accès refusé. Vous n'êtes pas un professeur.")
+        return redirect('login')  # ou une autre page appropriée
+    
+    try:
+        professeur = Professeur.objects.get(user=request.user)
+    except Professeur.DoesNotExist:
+        messages.error(request, "Profil professeur non trouvé. Contactez l'administrateur.")
+        return redirect('login')
+    
+    etudiants = Etudiant.objects.filter(groupe__in=professeur.groupe.all()).distinct()
+    sessions = Session.objects.filter(groupe__in=professeur.groupe.all()).order_by('date')
+    selected_session = None
+    form = absenceForm()
+    rapportForm = RapportForm()
+    mForm = messageForm()
+    NoteForm = noteForm()
+
     if request.method == 'POST':
+        session_id = request.POST.get('session_id')
+        if session_id:
+            selected_session = Session.objects.filter(id=session_id).first()
+        if not selected_session and sessions.exists():
+            selected_session = sessions.first()
+
         if 'submit_absence' in request.POST:
-            form = absenceForm(request.POST)
-            if form.is_valid():
-                form.save()
-                return redirect('professeur:dashboard')
+            if selected_session:
+                for etudiant in etudiants:
+                    status = request.POST.get(f'absence_{etudiant.id}') == 'on'
+                    absence.objects.update_or_create(
+                        seance=selected_session,
+                        etudiant=etudiant,
+                        defaults={'status': status}
+                    )
+                messages.success(request, "Absences enregistrées.")
+            else:
+                messages.error(request, "Aucune séance disponible pour enregistrer l'absence.")
+            return redirect('professeur:dashboard')
+
         elif 'submit_rapport' in request.POST:
             rapportForm = RapportForm(request.POST)
             if rapportForm.is_valid():
                 rapportForm.save()
+                messages.success(request, "Rapport envoyé.")
                 return redirect('professeur:dashboard')
+
         elif 'submit_message' in request.POST:
             mForm = messageForm(request.POST)
             if mForm.is_valid():
                 Message.objects.create(description=mForm.cleaned_data['content'])
+                messages.success(request, "Message envoyé.")
                 return redirect('professeur:dashboard')
+
         elif 'submit_note' in request.POST:
-            NoteForm = noteForm(request.POST)
-            if NoteForm.is_valid():
-                # Handle note submission
-                pass
-    return render(request, 'index.html',
-                  {
-                        'form':form,
-                        'rapportForm':rapportForm,
-                        'messageForm':mForm,
-                        'noteForm':NoteForm
-                  })
+            if selected_session:
+                for etudiant in etudiants:
+                    note_value = request.POST.get(f'note_{etudiant.id}')
+                    if note_value is not None and str(note_value).strip() != '':
+                        Note.objects.update_or_create(
+                            matiere=selected_session.matiere,
+                            etudiant=etudiant,
+                            defaults={'note': note_value}
+                        )
+                messages.success(request, "Notes enregistrées.")
+            else:
+                messages.error(request, "Aucune séance disponible pour enregistrer la note.")
+            return redirect('professeur:dashboard')
+
+    if not selected_session and sessions.exists():
+        selected_session = sessions.first()
+
+    existing_absences = {}
+    existing_notes = {}
+    if selected_session:
+        existing_absences = {
+            absence_obj.etudiant_id: absence_obj.status
+            for absence_obj in absence.objects.filter(seance=selected_session, etudiant__in=etudiants)
+        }
+        existing_notes = {
+            note_obj.etudiant_id: note_obj.note
+            for note_obj in Note.objects.filter(matiere=selected_session.matiere, etudiant__in=etudiants)
+        }
+
+    for etudiant in etudiants:
+        etudiant.absent = existing_absences.get(etudiant.id, False)
+        etudiant.note_value = existing_notes.get(etudiant.id, '')
+
+    return render(request, 'index.html', {
+        'form': form,
+        'rapportForm': rapportForm,
+        'messageForm': mForm,
+        'noteForm': NoteForm,
+        'etudiants': etudiants,
+        'sessions': sessions,
+        'selected_session': selected_session,
+    })
 
 
 class EtudiantListView(ListView):
     model = Etudiant
     template_name = 'index.html'
     context_object_name = 'etudiants'
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.role != 'professeur':
+            messages.error(request, "Accès refusé. Vous n'êtes pas un professeur.")
+            return redirect('login')
+        try:
+            Professeur.objects.get(user=request.user)
+        except Professeur.DoesNotExist:
+            messages.error(request, "Profil professeur non trouvé. Contactez l'administrateur.")
+            return redirect('login')
+        return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
         session_id = self.kwargs.get('session_id')
@@ -72,8 +147,35 @@ class NoteListView(ListView):
     template_name = 'index.html'
     context_object_name = 'noteEtudiants'
     
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.role != 'professeur':
+            messages.error(request, "Accès refusé. Vous n'êtes pas un professeur.")
+            return redirect('login')
+        try:
+            Professeur.objects.get(user=request.user)
+        except Professeur.DoesNotExist:
+            messages.error(request, "Profil professeur non trouvé. Contactez l'administrateur.")
+            return redirect('login')
+        return super().dispatch(request, *args, **kwargs)
+    
     def get_queryset(self):
         professeur = Professeur.objects.get(user=self.request.user)
-        return Etudiant.objects.filter(groupe=professeur.group)
+        return Etudiant.objects.filter(groupe__in=professeur.groupe.all())
 
     
+def sessions_json(request):
+    sessions = Session.objects.select_related('matiere', 'groupe')
+
+    data = []
+
+    for s in sessions:
+        start = datetime.combine(s.date, s.heure_depart)
+        end = datetime.combine(s.date, s.heure_fin)
+
+        data.append({
+            "title": f"{s.matiere.nom} ({s.groupe.nom if s.groupe else 'Sans groupe'})",
+            "start": start.isoformat(),
+            "end": end.isoformat(),
+        })
+
+    return JsonResponse(data, safe=False)
