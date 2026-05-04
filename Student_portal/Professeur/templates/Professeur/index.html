@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 {% load static %}
 <html lang="fr">
@@ -26,7 +25,6 @@
             <p class="panel-title">Calendrier</p>
             <div class="calendrier-content">
                 <div class="card calendrier-card">
-                    
                 </div>
             </div>
         </article>
@@ -36,7 +34,12 @@
             <p class="panel-title">Absences</p>
             <div class="absence-content">
                 <div class="card seance">
-                    
+                    <form method="post" action="">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button class="btn-valider" type="submit" name="submit_absence">Valider</button>
+                    </form>
+                </div>
                 <div class="card tableau">
                     <table>
                         <thead>
@@ -79,15 +82,9 @@
                 <div class="card tableau">
                     <table>
                         <thead>
-                            <tr><th>Étudiant</th><th>Note /20</th></tr>
+                            <tr><th>Étudiant</th><th>Note /20</th><th>Mention</th></tr>
                         </thead>
                         <tbody>
-                            {% for etudiant in noteEtudiants %}
-                                <tr>
-                                    <td>{{ etudiant.user.nom }} {{ etudiant.user.prenom }}</td>
-                                    <td>{{ noteForm.note }}</td>
-                                </tr>
-                            {% endfor %}
                         </tbody>
                     </table>
                 </div>
@@ -96,10 +93,9 @@
 
         <!-- Message / Rapport -->
         <article id="rapport" class="panel">
-
+            <p class="panel-title">Message / Rapport</p>
             <div class="rapport-content">
                 <div class="card message">
-                    <h1>Rapport</h1>
                    <form method="post" action="">
                     {% csrf_token %}
                     {{ rapportForm.as_p }}
@@ -107,12 +103,7 @@
                     </form>
                 </div>
                 <div class="card rapport-list">
-                    <h1>Messages</h1>
-                    <form method="post" action="">
-                    {% csrf_token %}
-                    {{ messageForm.as_p }}
-                    <button type="submit" name="submit_message">Envoyer</button>
-                    </form>
+                    hhhhhhhhhhhhhhhhhhh
                 </div>
             </div>
         </article>

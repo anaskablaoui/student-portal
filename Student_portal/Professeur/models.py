@@ -8,28 +8,23 @@ from authApp.models import custumUser
 class Professeur(models.Model):
     user = models.OneToOneField(custumUser, on_delete=models.CASCADE)
     CIN=models.CharField(max_length=50,unique=True)
-
+    groupe=models.ManyToManyField('Administrateur.Groupe',related_name='professeurs')
     class Meta:
         verbose_name= 'Professuer'
         verbose_name_plural='Professeurs'
     
     
     
-class presence(models.Model):
+class absence(models.Model):
     id=models.IntegerField(unique=True,primary_key=True)
     seance=models.ForeignKey(Session,on_delete=models.CASCADE,null=False)
-    info=models.ForeignKey('Status_presence',on_delete=models.CASCADE,null=False)
+    status=models.BooleanField(default=False)
+    etudiant=models.ForeignKey(Etudiant,on_delete=models.CASCADE,null=False)
 
     def __str__(self):
         return str(self.id)
 
-class Status_presence(models.Model):
-    etudiant=models.ForeignKey(Etudiant,on_delete=models.CASCADE,null=False)
-    status=models.BooleanField()
 
-    def __str__(self):
-        return super().__str__()
-    
 class Message(models.Model):
     id=models.IntegerField(unique=True,primary_key=True)
     description=models.CharField(max_length=200)

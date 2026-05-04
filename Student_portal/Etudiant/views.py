@@ -13,7 +13,7 @@ def etudiant_dashboard(request):
     # récupère les rapports de cet étudiant
     rapports = Rapport.objects.filter(etudiant=etudiant)
 
-    return render(request, 'etudiant/index.html', {
+    return render(request, 'etudiant.html', {
         'etudiant': etudiant,
         'notes': notes,
         'rapports': rapports,

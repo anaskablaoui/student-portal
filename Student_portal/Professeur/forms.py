@@ -1,5 +1,5 @@
 from django import forms
-from .models import Rapport, Professeur
+from .models import Rapport, Professeur,absence
 from django.utils import timezone
 from authApp.models import custumUser
 
@@ -84,3 +84,38 @@ class RapportForm(forms.ModelForm):
         self.professeur = kwargs.pop('professeur', None)
         super().__init__(*args, **kwargs)
         self.fields['date'].initial = timezone.now().date()
+        
+
+class absenceForm(forms.ModelForm):
+    class Meta:
+        model = absence
+        fields = ['seance', 'status', 'etudiant']
+        widgets = {
+            'status': forms.CheckboxInput(attrs={
+                'class': 'form-check-input',
+            })
+           
+        }
+        labels = {
+            
+            'status': 'Absent',
+            
+        }
+
+
+class messageForm(forms.Form):
+    content = forms.CharField(label='Message', widget=forms.Textarea(attrs={
+        'class': 'form-control',
+        'rows': 5,
+        'placeholder': 'Rédigez votre message ici...'
+    }))
+    
+    
+class noteForm(forms.Form):
+    note = forms.DecimalField(label='Note', max_digits=2, decimal_places=2, widget=forms.NumberInput(attrs={
+        'class': 'form-control',
+        'placeholder': 'Entrez la note (ex: 15.5)',
+        'min': 0,
+        'max': 20,
+        'step': 0.01,
+    }))
