@@ -12,9 +12,11 @@
 
         <!-- login etudiant -->
         <div class="form-box etudiant">
-            <form action="{% url 'professeur_dashboard' %}" method="POST">
-                <h1>Bonjour Monsieur</h1>
-                {{professeur_form.as_p}}
+            <form action="{% url 'login' %}" method="POST">
+                <h1>Bonjour Étudiant</h1>
+                {% csrf_token %}
+                <input type="hidden" name="form_type" value="etudiant">
+                {{etudiant_form.as_p}}
                 
                 <button type="submit" class="btn">Login</button>
             </form>
@@ -22,8 +24,10 @@
 
         <!-- login professeur -->
         <div class="form-box professeur">
-            <form action="{% url 'professeur_dashboard' %}" method="POST">
-                <h1>Bonjour Etudiant</h1>
+            <form action="{% url 'login' %}" method="POST">
+                <h1>Bonjour Professeur</h1>
+                {% csrf_token %}
+                <input type="hidden" name="form_type" value="professeur">
                 {{professeur_form.as_p}}
                 
                 <button type="submit" class="btn">Login</button>

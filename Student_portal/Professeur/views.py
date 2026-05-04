@@ -2,35 +2,39 @@ from django.shortcuts import render,redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.views import View
-from .forms import ProfesseurCreationForm, RapportForm,absenceForm,messageForm,noteForm
+from .forms import RapportForm,absenceForm,messageForm,noteForm
 from .models import Professeur, Rapport,Message
 from Etudiant.models import Etudiant
 from django.views.generic import ListView
 from Administrateur.models import Session
+
+
+
+@login_required(login_url='login')
 def dashboard(request):
     form=absenceForm()
     rapportForm=RapportForm()
     mForm=messageForm()
-    noteForm=noteForm()
+    NoteForm=noteForm()
     if request.method == 'POST':
         if 'submit_absence' in request.POST:
             form = absenceForm(request.POST)
             if form.is_valid():
                 form.save()
-                return redirect('dashboard')
+                return redirect('professeur:dashboard')
         elif 'submit_rapport' in request.POST:
             rapportForm = RapportForm(request.POST)
             if rapportForm.is_valid():
                 rapportForm.save()
-                return redirect('dashboard')
+                return redirect('professeur:dashboard')
         elif 'submit_message' in request.POST:
             mForm = messageForm(request.POST)
             if mForm.is_valid():
                 Message.objects.create(description=mForm.cleaned_data['content'])
-                return redirect('dashboard')
+                return redirect('professeur:dashboard')
         elif 'submit_note' in request.POST:
-            noteForm = noteForm(request.POST)
-            if noteForm.is_valid():
+            NoteForm = noteForm(request.POST)
+            if NoteForm.is_valid():
                 # Handle note submission
                 pass
     return render(request, 'index.html',
@@ -38,7 +42,7 @@ def dashboard(request):
                         'form':form,
                         'rapportForm':rapportForm,
                         'messageForm':mForm,
-                        'noteForm':noteForm
+                        'noteForm':NoteForm
                   })
 
 
