@@ -1,14 +1,87 @@
-
-<!DOCTYPE html>
 {% load static %}
+<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <link rel="stylesheet" href="{% static 'stylesProfesseur/style.css' %}">
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
     <script defer src="{% static 'scriptProfesseur/script.js' %}"></script>
+    <script>
+        // Inline calendar initialization
+        function setupCalendar() {
+            const links = document.querySelectorAll(".nav-link");
+            const panels = document.querySelectorAll(".panel");
+
+            links.forEach(link => {
+                link.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    const target = link.getAttribute("data-panel");
+                    links.forEach(l => l.classList.remove("active"));
+                    link.classList.add("active");
+                    panels.forEach(panel => panel.classList.remove("active"));
+                    const activePanel = document.getElementById(target);
+                    if (activePanel) activePanel.classList.add("active");
+                });
+            });
+
+            const calendarEl = document.getElementById('calendar');
+            if (calendarEl) {
+                const today = new Date();
+                const year = today.getFullYear();
+                const month = today.getMonth();
+
+                fetch('/professeur/sessions-json/')
+                    .then(response => response.json())
+                    .then(sessions => {
+                        const firstDay = new Date(year, month, 1);
+                        const lastDay = new Date(year, month + 1, 0);
+                        const startDayOfWeek = (firstDay.getDay() - 1 + 7) % 7;
+                        
+                        let html = '<div class="cal-grid">';
+                        const daysOfWeek = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+                        daysOfWeek.forEach(day => {
+                            html += `<div class="cal-day-label">${day}</div>`;
+                        });
+
+                        for (let i = 0; i < startDayOfWeek; i++) {
+                            html += '<div class="cal-day empty"></div>';
+                        }
+
+                        for (let day = 1; day <= lastDay.getDate(); day++) {
+                            const currentDate = new Date(year, month, day);
+                            const isToday = currentDate.toDateString() === new Date().toDateString();
+                            const dayEvents = sessions.filter(session => {
+                                const sessionDate = new Date(session.start);
+                                return sessionDate.getDate() === day && 
+                                       sessionDate.getMonth() === month && 
+                                       sessionDate.getFullYear() === year;
+                            });
+
+                            html += `<div class="cal-day ${isToday ? 'today' : ''}">
+                                <div>${day}</div>
+                                ${dayEvents.length > 0 ? '<div class="cal-events">' + dayEvents.map(e => `<div class="cal-event" title="${e.title}">•</div>`).join('') + '</div>' : ''}
+                            </div>`;
+                        }
+
+                        const totalCells = startDayOfWeek + lastDay.getDate();
+                        const remainingCells = totalCells % 7 === 0 ? 0 : 7 - (totalCells % 7);
+                        for (let i = 0; i < remainingCells; i++) {
+                            html += '<div class="cal-day empty"></div>';
+                        }
+
+                        html += '</div>';
+                        calendarEl.innerHTML = html;
+                    });
+            }
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', setupCalendar);
+        } else {
+            setupCalendar();
+        }
+    </script>
 </head>
 <body>
     <aside class="sidebar">

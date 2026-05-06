@@ -163,8 +163,16 @@ class NoteListView(ListView):
         return Etudiant.objects.filter(groupe__in=professeur.groupe.all())
 
     
+@login_required(login_url='login')
 def sessions_json(request):
-    sessions = Session.objects.select_related('matiere', 'groupe')
+    if not request.user.is_authenticated:
+        return JsonResponse([], safe=False)
+    
+    try:
+        professeur = Professeur.objects.get(user=request.user)
+        sessions = Session.objects.filter(groupe__in=professeur.groupe.all()).select_related('matiere', 'groupe').distinct()
+    except Professeur.DoesNotExist:
+        return JsonResponse([], safe=False)
 
     data = []
 
