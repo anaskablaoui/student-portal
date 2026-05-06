@@ -72,7 +72,7 @@
                             {% for session in sessions %}
                                 <tr>
                                     <td>{{ session.matiere }}</td>
-                                    <td>{{ session.professeur }}</td>
+                                    <td>{{ session.getProfesseur() }}</td>
                                     <td>{{ session.date }}</td>
                                     <td>{{ session.heure_depart }} - {{ session.heure_fin }}</td>
                                     <td>{{ session.type }}</td>
