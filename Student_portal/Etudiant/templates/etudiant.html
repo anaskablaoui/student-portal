@@ -125,7 +125,11 @@
             <p class="panel-title">Message / Rapport</p>
             <div class="rapport-content">
                 <div class="card message">
-                   
+                   <form action="{% url 'etudiant_dashboard' %}" method="post">
+                        {% csrf_token %}
+                        {{ form.as_p }} 
+                        <button type="submit" class="btn-valider">Envoyer</button>
+                   </form>
                 </div>
                 <div class="card rapport-list">
                     
