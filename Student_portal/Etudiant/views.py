@@ -29,7 +29,7 @@ class listeNotes(ListView):
     context_object_name = 'notes'
 
     def getProfesseur(self):
-        groupe = Etudiant.request.get(user=self.request.user)
+        etudiant = Etudiant.request.get(user=self.request.user)
         return Note.objects.filter(etudiant=etudiant)
     
     def get_queryset(self):
