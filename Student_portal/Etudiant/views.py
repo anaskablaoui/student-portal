@@ -4,6 +4,7 @@ from django.views.generic import ListView
 from Professeur.models import Note, Rapport,absence,Message
 from .models import Etudiant
 from .forms import EtudiantForm
+from django.db.models import Avg
 
 
 @login_required(login_url='/login/')
@@ -24,6 +25,29 @@ def etudiant_dashboard(request):
         'etudiant': etudiant,
         'form': form,
     })
+    
+def statistics(request):
+    etudiant = Etudiant.objects.get(user=request.user)
+    notes = (
+    Note.objects
+    .filter(etudiant=etudiant)
+    .values('matiere__nom')
+    .annotate(avg_note=Avg('note'))
+)
+    
+    labels = [n['matiere__nom'] for n in notes]
+    data = [float(n['avg_note']) for n in notes]
+
+    for note in notes:
+        labels.append(note.matiere.nom)
+        data.append(float(note.note))
+
+    context = {
+        'labels': labels,
+        'data': data,
+    }
+
+    return render(request, 'stats.html', context)
     
 class listeNotes(ListView):
     model = Note
@@ -47,3 +71,4 @@ class messageListView(ListView):
     model = Message
     template_name = 'etudiant.html'
     context_object_name = 'messages'
+
