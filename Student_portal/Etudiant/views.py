@@ -13,7 +13,9 @@ def etudiant_dashboard(request):
     if request.method == 'POST':
         form = EtudiantForm(request.POST)
         if form.is_valid():
-            message = form.save()
+            message = form.save(commit=False)  # ne pas encore sauvegarder en BDD
+            message.user = request.user        # ✅ remplir user automatiquement
+            message.save()                     # maintenant on sauvegarde
             return redirect('etudiant_dashboard')  # évite la re-soumission du formulaire
     else:
         form = EtudiantForm()
@@ -28,10 +30,6 @@ class listeNotes(ListView):
     template_name = 'etudiant.html'
     context_object_name = 'notes'
 
-    def getProfesseur(self):
-        etudiant = Etudiant.request.get(user=self.request.user)
-        return Note.objects.filter(etudiant=etudiant)
-    
     def get_queryset(self):
         etudiant = Etudiant.request.user(user=self.request.user)
         return Note.objects.filter(etudiant=etudiant)
@@ -44,3 +42,8 @@ class absencesListView(ListView):
     def get_queryset(self):
         etudiant = Etudiant.request.get(user=self.request.user)
         return absence.objects.filter(etudiant=etudiant)
+    
+class messageListView(ListView):
+    model = Message
+    template_name = 'etudiant.html'
+    context_object_name = 'messages'

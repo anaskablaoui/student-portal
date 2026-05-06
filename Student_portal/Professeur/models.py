@@ -27,6 +27,7 @@ class absence(models.Model):
 
 class Message(models.Model):
     id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(custumUser, on_delete=models.CASCADE)
     description = models.CharField(max_length=200)
     dateEnvoi = models.DateTimeField(auto_now_add=True)
     def __str__(self):
