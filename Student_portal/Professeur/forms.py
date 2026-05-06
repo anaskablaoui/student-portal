@@ -1,5 +1,5 @@
 from django import forms
-from .models import Rapport, Professeur,absence
+from .models import Rapport, Professeur,absence,Message
 from django.utils import timezone
 from authApp.models import custumUser
 
@@ -103,12 +103,19 @@ class absenceForm(forms.ModelForm):
         }
 
 
-class messageForm(forms.Form):
-    content = forms.CharField(label='Message', widget=forms.Textarea(attrs={
+class messageForm(forms.ModelForm):
+    description = forms.CharField(label='Message', widget=forms.Textarea(attrs={
         'class': 'form-control',
         'rows': 5,
         'placeholder': 'Rédigez votre message ici...'
     }))
+    
+    class Meta:
+        model = Message
+        fields = ['description']
+        labels = {
+            'description': 'Message',
+        }
     
     
 class noteForm(forms.Form):
@@ -119,3 +126,6 @@ class noteForm(forms.Form):
         'max': 20,
         'step': 0.01,
     }))
+    
+    
+        

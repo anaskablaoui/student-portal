@@ -61,9 +61,10 @@ def dashboard(request):
         elif 'submit_message' in request.POST:
             mForm = messageForm(request.POST)
             if mForm.is_valid():
-                Message.objects.create(description=mForm.cleaned_data['content'])
-                messages.success(request, "Message envoyé.")
-                return redirect('professeur:dashboard')
+                message = mForm.save(commit=False)  # ne pas encore sauvegarder en BDD
+                message.user = request.user        # ✅ remplir user automatiquement
+                message.save()                     # maintenant on sauvegarde
+                return redirect('professeur:dashboard') 
 
         elif 'submit_note' in request.POST:
             if selected_session:
