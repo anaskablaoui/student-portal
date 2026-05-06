@@ -2,6 +2,7 @@ from django import forms
 from .models import Etudiant
 from django.utils import timezone
 from authApp.models import custumUser
+from Professeur.models import Message
 
 
 class EtudiantCreationForm(forms.ModelForm):
@@ -62,3 +63,15 @@ class EtudiantChangeForm(forms.ModelForm):
             self.fields['nom'].initial = self.instance.user.nom
             self.fields['prenom'].initial = self.instance.user.prenom
             self.fields['email'].initial = self.instance.user.email
+
+class EtudiantForm(forms.ModelForm):
+    description = forms.CharField(
+        label="Message",
+        widget=forms.Textarea(attrs={
+            'rows': 4,
+            'placeholder': 'Rédigez votre message ici...',
+        })
+    )
+    class Meta:
+        model = Message
+        fields = ['description']

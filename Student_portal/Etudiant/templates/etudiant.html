@@ -72,7 +72,7 @@
                             {% for session in sessions %}
                                 <tr>
                                     <td>{{ session.matiere }}</td>
-                                    <td>{{ session.getProfesseur() }}</td>
+                                    <td>{{ session.getProfesseur }}</td>
                                     <td>{{ session.date }}</td>
                                     <td>{{ session.heure_depart }} - {{ session.heure_fin }}</td>
                                     <td>{{ session.type }}</td>
@@ -125,7 +125,11 @@
             <p class="panel-title">Message / Rapport</p>
             <div class="rapport-content">
                 <div class="card message">
-                   
+                   <form action="{% url 'etudiant_dashboard' %}" method="post">
+                        {% csrf_token %}
+                        {{ form.as_p }} 
+                        <button type="submit" class="btn-valider">Envoyer</button>
+                   </form>
                 </div>
                 <div class="card rapport-list">
                     

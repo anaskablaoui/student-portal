@@ -50,7 +50,7 @@ def etudiantLogout_view(request):
     if request.method == "POST":
         logout(request)
         return redirect('login')
-    return redirect('etudiant_dashboard')
+    return redirect('etudiant:etudiant_dashboard')
 
 
 def professeurLogout_view(request):
