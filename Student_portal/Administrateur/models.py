@@ -63,7 +63,7 @@ class Session(models.Model):
     date = models.DateField()
     heure_depart = models.TimeField()
     heure_fin = models.TimeField()
-
+    type=models.CharField(max_length=20, choices=[('cours', 'Cours'), ('td', 'TD'), ('tp', 'TP')])
     def __str__(self):
         return f"Session {self.id} - {self.matiere.nom}"
 

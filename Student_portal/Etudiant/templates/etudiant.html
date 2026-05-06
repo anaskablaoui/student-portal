@@ -10,7 +10,7 @@
 </head> 
 <body>
     <aside class="sidebar">
-        <h2 class="profil">Bonjour Monsieur</h2>
+        <h2 class="profil">Bonjour ETUDIANT</h2>
         <ul>
             <li><a href="#" class="nav-link active" data-panel="Home"><span class="icon"></span> Calendrier</a></li>
             <li><a href="#" class="nav-link" data-panel="Absence"><span class="icon"></span> Absence</a></li>
@@ -61,14 +61,23 @@
                     <table>
                         <thead>
                             <tr>
-                                <th>Étudiant</th>
                                 <th>Matière</th>
+                                <th>Professeur</th>
                                 <th>Date</th>
-                                <th>Statut</th>
+                                <th>Heure</th>
+                                <th>Type</th>
                             </tr>
                         </thead>
                         <tbody>
-                            
+                            {% for session in sessions %}
+                                <tr>
+                                    <td>{{ session.matiere }}</td>
+                                    <td>{{ session.professeur }}</td>
+                                    <td>{{ session.date }}</td>
+                                    <td>{{ session.heure_depart }} - {{ session.heure_fin }}</td>
+                                    <td>{{ session.type }}</td>
+                                </tr>
+                            {% endfor %}
                         </tbody>
                     </table>
                 </div>
@@ -92,10 +101,19 @@
                 <div class="card tableau">
                     <table>
                         <thead>
-                            <tr><th>Étudiant</th><th>Note /20</th><th>Mention</th></tr>
+                            <tr><th>Matiere</th>
+                                <th>Note /20</th>
+                                <th>Mention</th>
+                            </tr>
                         </thead>
                         <tbody>
-                            
+                            {% for note in notes %}
+                                <tr>
+                                    <td>{{ note.matiere }}</td>
+                                    <td>{{ note.note }}</td>
+                                    <td> {% if note.note >= 10 %}Réussi {% else %}ratt{% endif %} </td>
+                                </tr>
+                            {% endfor %}
                         </tbody>
                     </table>
                 </div>
