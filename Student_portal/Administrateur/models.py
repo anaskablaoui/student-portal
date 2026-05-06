@@ -65,7 +65,7 @@ class Session(models.Model):
     heure_fin = models.TimeField()
     
     def getProfesseur(self):
-        return self.matiere.module.filiere.groupes.filter(professeurs__groupe=self.groupe).professeurs
+        pass
     
     def __str__(self):
         return f"Session {self.id} - {self.matiere.nom}"
