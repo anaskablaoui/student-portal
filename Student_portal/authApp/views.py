@@ -23,7 +23,7 @@ def login_view(request):
                 user = authenticate(request, matricule=matricule, password=password)
                 if user is not None and user.role=='etudiant':
                     login(request, user)
-                    return redirect("etudiant_dashboard")  # → Etudiant/views.py
+                    return redirect("etudiant_dashboard")  
                 else:
                     error = "Matricule ou mot de passe incorrect"
 
