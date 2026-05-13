@@ -12,6 +12,9 @@ from django.http import JsonResponse
 
 @login_required(login_url='login')
 def dashboard(request):
+
+    no
+
     if request.user.role != 'professeur':
         messages.error(request, "Accès refusé. Vous n'êtes pas un professeur.")
         return redirect('login')  # ou une autre page appropriée
@@ -61,9 +64,9 @@ def dashboard(request):
         elif 'submit_message' in request.POST:
             mForm = messageForm(request.POST)
             if mForm.is_valid():
-                message = mForm.save(commit=False)  # ne pas encore sauvegarder en BDD
-                message.user = request.user        # ✅ remplir user automatiquement
-                message.save()                     # maintenant on sauvegarde
+                message = mForm.save(commit=False)  
+                message.user = request.user        
+                message.save()                     
                 return redirect('professeur:dashboard') 
 
         elif 'submit_note' in request.POST:
@@ -110,6 +113,12 @@ def dashboard(request):
         'selected_session': selected_session,
     })
 
+
+def profile(request):
+    prof = request.user
+    return render(request,'profile.html',{
+        'professeur':prof
+    })
 
 class EtudiantListView(ListView):
     model = Etudiant
@@ -165,26 +174,34 @@ class NoteListView(ListView):
 
     
 @login_required(login_url='login')
-def sessions_json(request):
-    if not request.user.is_authenticated:
-        return JsonResponse([], safe=False)
-    
-    try:
-        professeur = Professeur.objects.get(user=request.user)
-        sessions = Session.objects.filter(groupe__in=professeur.groupe.all()).select_related('matiere', 'groupe').distinct()
-    except Professeur.DoesNotExist:
-        return JsonResponse([], safe=False)
+def calendrier_events(request):
 
-    data = []
+    events = []
 
-    for s in sessions:
-        start = datetime.combine(s.date, s.heure_depart)
-        end = datetime.combine(s.date, s.heure_fin)
+    sessions = Session.objects.select_related('matiere', 'groupe')
 
-        data.append({
-            "title": f"{s.matiere.nom} ({s.groupe.nom if s.groupe else 'Sans groupe'})",
+    for session in sessions:
+
+        start = datetime.combine(
+            session.date,
+            session.heure_depart
+        )
+
+        end = datetime.combine(
+            session.date,
+            session.heure_fin
+        )
+
+        events.append({
+            "title": session.matiere.nom,
             "start": start.isoformat(),
             "end": end.isoformat(),
+
+            
+
+            "extendedProps": {
+                "groupe": session.groupe.nom if session.groupe else "",
+            }
         })
 
-    return JsonResponse(data, safe=False)
+    return JsonResponse(events, safe=False)

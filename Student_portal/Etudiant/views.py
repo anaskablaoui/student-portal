@@ -5,53 +5,76 @@ from Professeur.models import Note, Rapport,absence,Message
 from .models import Etudiant
 from .forms import EtudiantForm
 from django.db.models import Avg
-
+from datetime import datetime
+from django.http import JsonResponse
+from Administrateur.models import Session,Matiere
 
 @login_required(login_url='/login/')
 def etudiant_dashboard(request):
     etudiant = Etudiant.objects.get(user=request.user)
+    notes = Note.objects.filter(etudiant=etudiant).select_related(
+        'matiere'
+    )
+
+    matieres = Matiere.objects.all()
+
+    context = {
+        'notes': notes,
+        'matieres': matieres,
+    }
+
+
+    
     if request.method == 'POST':
         etudiant = Etudiant.objects.get(user=request.user)
         form = EtudiantForm(request.POST)
         if form.is_valid():
-            message = form.save(commit=False)  # ne pas encore sauvegarder en BDD
-            message.user = request.user        # ✅ remplir user automatiquement
-            message.save()                     # maintenant on sauvegarde
-            return redirect('etudiant_dashboard')  # évite la re-soumission du formulaire
+            message = form.save(commit=False)  
+            message.user = request.user        
+            message.save()                     
+            return redirect('etudiant_dashboard')  
     else:
         form = EtudiantForm()
 
     return render(request, 'etudiant.html', {
         'etudiant' : etudiant,
-        'notes'    : Note.objects.filter(etudiant=etudiant),
+        
         'absences' : absence.objects.filter(etudiant=etudiant),
         'messages' : Message.objects.all(),
         'form'     : form,
+        'notes': notes,
+        'matieres': matieres,
     })
     
-def statistics(request):
-    etudiant = Etudiant.objects.get(user=request.user)
-    
-    notes = (
-        Note.objects
-        .filter(etudiant=etudiant)
-        .values('matiere__nom')
-        .annotate(avg_note=Avg('note'))
-    )
-    
-    # ✅ utilise les clés du dict, pas des attributs d'objet
-    labels = [n['matiere__nom'] for n in notes]
-    data   = [float(n['avg_note']) for n in notes]
+@login_required(login_url='login')
+def calendrier_events(request):
 
-    #  supprime cette boucle — c'est un doublon qui cause l'erreur
-    # for note in notes:
-    #     labels.append(note.matiere.nom)
-    #     data.append(float(note.note))
+    events = []
 
-    return render(request, 'stats.html', {
-        'labels': labels,
-        'data'  : data,
-    })    
+    sessions = Session.objects.select_related('matiere', 'groupe')
+
+    for session in sessions:
+
+        start = datetime.combine(
+            session.date,
+            session.heure_depart
+        )
+
+        end = datetime.combine(
+            session.date,
+            session.heure_fin
+        )
+
+        events.append({
+            "title": session.matiere.nom,
+            "start": start.isoformat(),
+            "end": end.isoformat(),
+            "extendedProps": {
+                "groupe": session.groupe.nom if session.groupe else "",
+            }
+        })
+
+    return JsonResponse(events, safe=False)   
 class listeNotes(ListView):
     model = Note
     template_name = 'etudiant.html'

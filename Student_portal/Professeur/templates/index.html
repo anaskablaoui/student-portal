@@ -9,78 +9,55 @@
     <script defer src="{% static 'scriptProfesseur/script.js' %}"></script>
     <script>
         // Inline calendar initialization
-        function setupCalendar() {
-            const links = document.querySelectorAll(".nav-link");
-            const panels = document.querySelectorAll(".panel");
+        document.addEventListener('DOMContentLoaded', function() {
 
-            links.forEach(link => {
-                link.addEventListener("click", (e) => {
-                    e.preventDefault();
-                    const target = link.getAttribute("data-panel");
-                    links.forEach(l => l.classList.remove("active"));
-                    link.classList.add("active");
-                    panels.forEach(panel => panel.classList.remove("active"));
-                    const activePanel = document.getElementById(target);
-                    if (activePanel) activePanel.classList.add("active");
-                });
-            });
+    const calendarEl = document.getElementById('calendar');
 
-            const calendarEl = document.getElementById('calendar');
-            if (calendarEl) {
-                const today = new Date();
-                const year = today.getFullYear();
-                const month = today.getMonth();
+    const calendar = new FullCalendar.Calendar(calendarEl, {
 
-                fetch('/professeur/sessions-json/')
-                    .then(response => response.json())
-                    .then(sessions => {
-                        const firstDay = new Date(year, month, 1);
-                        const lastDay = new Date(year, month + 1, 0);
-                        const startDayOfWeek = (firstDay.getDay() - 1 + 7) % 7;
-                        
-                        let html = '<div class="cal-grid">';
-                        const daysOfWeek = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
-                        daysOfWeek.forEach(day => {
-                            html += `<div class="cal-day-label">${day}</div>`;
-                        });
+        initialView: 'timeGridWeek',
 
-                        for (let i = 0; i < startDayOfWeek; i++) {
-                            html += '<div class="cal-day empty"></div>';
-                        }
+        locale: 'fr',
 
-                        for (let day = 1; day <= lastDay.getDate(); day++) {
-                            const currentDate = new Date(year, month, day);
-                            const isToday = currentDate.toDateString() === new Date().toDateString();
-                            const dayEvents = sessions.filter(session => {
-                                const sessionDate = new Date(session.start);
-                                return sessionDate.getDate() === day && 
-                                       sessionDate.getMonth() === month && 
-                                       sessionDate.getFullYear() === year;
-                            });
+        firstDay: 1,
 
-                            html += `<div class="cal-day ${isToday ? 'today' : ''}">
-                                <div>${day}</div>
-                                ${dayEvents.length > 0 ? '<div class="cal-events">' + dayEvents.map(e => `<div class="cal-event" title="${e.title}">•</div>`).join('') + '</div>' : ''}
-                            </div>`;
-                        }
+        allDaySlot: false,
 
-                        const totalCells = startDayOfWeek + lastDay.getDate();
-                        const remainingCells = totalCells % 7 === 0 ? 0 : 7 - (totalCells % 7);
-                        for (let i = 0; i < remainingCells; i++) {
-                            html += '<div class="cal-day empty"></div>';
-                        }
+        slotMinTime: "08:00:00",
+        slotMaxTime: "20:00:00",
 
-                        html += '</div>';
-                        calendarEl.innerHTML = html;
-                    });
-            }
+        nowIndicator: true,
+
+        height: "auto",
+
+        expandRows: true,
+
+        headerToolbar: {
+            left: 'prev,next',
+            center: 'title',
+            right: 'today,timeGridWeek,timeGridDay'
+        },
+
+        events: '/calendar/events/',
+
+        eventTimeFormat: {
+            hour: '2-digit',
+            minute: '2-digit',
+            meridiem: false
+        },
+
+        eventDidMount: function(info){
+
+            info.el.style.boxShadow =
+            "0 4px 12px rgba(0,0,0,0.08)";
+
         }
 
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', setupCalendar);
-        } else {
-            setupCalendar();
-        }
+    });
+
+    calendar.render();
+
+});
     </script>
 </head>
 <body>
@@ -91,11 +68,12 @@
             <li><a href="#" class="nav-link" data-panel="Absence"><span class="icon"></span> Absence</a></li>
             <li><a href="#" class="nav-link" data-panel="note"><span class="icon"></span> Note</a></li>
             <li><a href="#" class="nav-link" data-panel="rapport"><span class="icon"></span> Message / Rapport</a></li>
-            <form action=" {% url "logout" %} " method="post">
+            
+        </ul>
+        <form action=" {% url "logout" %} " method="post">
                 {% csrf_token %}
                 <button type="submit">Déconnexion</button>
             </form>
-        </ul>
     </aside>
 
     <main>

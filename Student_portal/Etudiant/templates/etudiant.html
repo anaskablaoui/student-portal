@@ -8,6 +8,58 @@
     <title>Dashboard</title>
     <link rel="stylesheet" href=" {%static 'stylesEtudiant/style.css'%} ">
     <script defer src="{% static "scriptEtudiant/script.js" %}" ></script>
+    <script defer>     // Inline calendar initialization
+        document.addEventListener('DOMContentLoaded', function() {
+
+    const calendarEl = document.getElementById('calendar');
+
+    const calendar = new FullCalendar.Calendar(calendarEl, {
+
+        initialView: 'timeGridWeek',
+
+        locale: 'fr',
+
+        firstDay: 1,
+
+        allDaySlot: false,
+
+        slotMinTime: "08:00:00",
+        slotMaxTime: "20:00:00",
+
+        nowIndicator: true,
+
+        height: "auto",
+
+        expandRows: true,
+
+        headerToolbar: {
+            left: 'prev,next',
+            center: 'title',
+            right: 'today,timeGridWeek,timeGridDay'
+        },
+
+        events: '/calendar/events/',
+
+        eventTimeFormat: {
+            hour: '2-digit',
+            minute: '2-digit',
+            meridiem: false
+        },
+
+        eventDidMount: function(info){
+
+            info.el.style.boxShadow =
+            "0 4px 12px rgba(0,0,0,0.08)";
+
+        }
+
+    });
+
+    calendar.render();
+
+    
+
+});</script>
 </head> 
 <body>
     <aside class="sidebar">
@@ -17,6 +69,7 @@
             <li><a href="#" class="nav-link" data-panel="Absence"><span class="icon"></span> Absence</a></li>
             <li><a href="#" class="nav-link" data-panel="note"><span class="icon"></span> Note</a></li>
             <li><a href="#" class="nav-link" data-panel="rapport"><span class="icon"></span> Message</a></li>
+            <li><a href="#" class="nav-link" data-panel="profile">Profile</a></li>
         </ul>
         <form action="{% url 'logout' %}" method="post">
             {% csrf_token %}
@@ -30,7 +83,7 @@
             <p class="panel-title">Calendrier</p>
             <div class="calendrier-content">
                 <div class="card calendrier-card">
-                    
+                    <div class="calendar"></div>
                 </div>
             </div>
         </article>
@@ -88,12 +141,25 @@
             <p class="panel-title">Notes</p>
             <div class="note-content">
                 <div class="card groupe">
-                    <select></select>
-                    <select></select>
-                    <select></select>
+                    <select id="matiereFilter">
+
+                        <option value="">
+                            Toutes les matières
+                        </option>
+
+                        {% for matiere in matieres %}
+
+                            <option value="{{ matiere.id }}">
+                                {{ matiere.nom }}
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+                    
                     <div class="stat-row">
                         <div class="stat"><div class="lbl">Moyenne</div></div>
-                        <div class="stat"><div class="lbl">Max</div></div>
+                        <div class="stat"><div class="lbl">Max</div ></div>
                         <div class="stat"><div class="lbl">Min</div></div>
                         <div class="stat"><button><a href="{% url 'statistics' %}">Voir les statistiques</a></button></div>
                     </div>
@@ -106,9 +172,9 @@
                                 <th>Mention</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="notesTable">
                             {% for note in notes %}
-                                <tr>
+                                <tr data-matiere="{{ note.matiere.id }}">
                                     <td>{{ note.matiere }}</td>
                                     <td>{{ note.note }}</td>
                                     <td> {% if note.note >= 10 %}Réussi {% else %}ratt{% endif %} </td>
@@ -230,6 +296,173 @@
                     </div>
                 </div>
             </div>
+        </article>
+
+        <article id="profil" class="panel">
+            <div class="page-header">
+    <h1>Mon Profil</h1>
+    <p>Gérez vos informations personnelles et vos préférences</p>
+  </div>
+ 
+  <!-- HERO -->
+  <div class="profile-hero">
+    <div class="avatar-wrap">
+      <div class="avatar" id="avatarInitials">AB</div>
+      <div class="status-dot"></div>
+    </div>
+    <div class="hero-info">
+      <div class="role-badge" id="roleLabel">Professeur</div>
+      <h2 id="fullName">Anas Benlahcen</h2>
+      <div class="hero-meta">
+        <span>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,12 2,6"/></svg>
+          <span id="emailDisplay">anas.benlahcen@emsi.ma</span>
+        </span>
+        <span>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          Casablanca, Maroc
+        </span>
+        <span>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Depuis Sept. 2021
+        </span>
+      </div>
+    </div>
+    <div class="hero-actions">
+      <button class="btn btn-primary" onclick="saveChanges()">Sauvegarder</button>
+      <button class="btn btn-outline" onclick="toggleEdit()">Modifier</button>
+    </div>
+  </div>
+ 
+  <!-- STATS -->
+  <div class="grid-3">
+    <div class="stat-card">
+      <div class="stat-icon" style="background:#eef0fb;">📚</div>
+      <div class="stat-value">12</div>
+      <div class="stat-label">Cours enseignés</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background:#fef3c7;">👥</div>
+      <div class="stat-value">148</div>
+      <div class="stat-label">Étudiants</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background:#dcfce7;">✅</div>
+      <div class="stat-value">94%</div>
+      <div class="stat-label">Taux de présence</div>
+    </div>
+  </div>
+ 
+  <div class="grid-2">
+ 
+    <!-- INFO PERSONNELLES -->
+    <div class="card">
+      <div class="card-title">Informations personnelles</div>
+ 
+      <div class="info-row">
+        <div class="info-label">Prénom</div>
+        <input class="editable-field" id="firstName" value="Anas" disabled onchange="syncName()"/>
+      </div>
+      <div class="info-row">
+        <div class="info-label">Nom</div>
+        <input class="editable-field" id="lastName" value="Benlahcen" disabled onchange="syncName()"/>
+      </div>
+      <div class="info-row">
+        <div class="info-label">Email</div>
+        <input class="editable-field" id="email" value="anas.benlahcen@emsi.ma" disabled onchange="syncEmail()"/>
+      </div>
+      <div class="info-row">
+        <div class="info-label">Téléphone</div>
+        <input class="editable-field" id="phone" value="+212 6 12 34 56 78" disabled/>
+      </div>
+      <div class="info-row">
+        <div class="info-label">Date de naissance</div>
+        <input class="editable-field" id="dob" value="15 Mars 1985" disabled/>
+      </div>
+      <div class="info-row">
+        <div class="info-label">CIN</div>
+        <input class="editable-field" id="cin" value="AB123456" disabled/>
+      </div>
+    </div>
+ 
+    <!-- INFO PROFESSIONNELLES -->
+    <div class="card">
+      <div class="card-title">Informations professionnelles</div>
+ 
+      <div class="info-row">
+        <div class="info-label">Rôle</div>
+        <div class="info-value" id="roleDisplay">Professeur</div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">Département</div>
+        <input class="editable-field" id="dept" value="Informatique" disabled/>
+      </div>
+      <div class="info-row">
+        <div class="info-label">Spécialité</div>
+        <input class="editable-field" id="spec" value="Génie Logiciel" disabled/>
+      </div>
+      <div class="info-row">
+        <div class="info-label">Bureau</div>
+        <input class="editable-field" id="office" value="Bâtiment A — Salle 204" disabled/>
+      </div>
+      <div class="info-row">
+        <div class="info-label">Statut</div>
+        <div class="info-value" style="color: var(--success); font-weight:600;">● Actif</div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">Matricule</div>
+        <div class="info-value">EMSI-PR-2021-0042</div>
+      </div>
+    </div>
+ 
+    <!-- COMPÉTENCES -->
+    <div class="card">
+      <div class="card-title">Matières enseignées</div>
+      <div class="tags" id="tagContainer">
+        <span class="tag">Algorithmes</span>
+        <span class="tag">Base de données</span>
+        <span class="tag">Java EE</span>
+        <span class="tag">UML & Modélisation</span>
+        <span class="tag">Systèmes distribués</span>
+        <span class="tag">Réseaux</span>
+      </div>
+    </div>
+ 
+    <!-- ACTIVITÉ RÉCENTE -->
+    <div class="card">
+      <div class="card-title">Activité récente</div>
+ 
+      <div class="activity-item">
+        <div class="activity-dot" style="background:#4a6cf7;"></div>
+        <div>
+          <div class="activity-text"><span>Note saisie</span> — Contrôle DS1 Algo (3IIR)</div>
+          <div class="activity-time">Aujourd'hui à 11:24</div>
+        </div>
+      </div>
+      <div class="activity-item">
+        <div class="activity-dot" style="background:#f59e0b;"></div>
+        <div>
+          <div class="activity-text"><span>Absence marquée</span> — 3 étudiants absents</div>
+          <div class="activity-time">Hier à 09:05</div>
+        </div>
+      </div>
+      <div class="activity-item">
+        <div class="activity-dot" style="background:#22c55e;"></div>
+        <div>
+          <div class="activity-text"><span>Rapport soumis</span> — Bilan semestre S1</div>
+          <div class="activity-time">12 Mai 2026</div>
+        </div>
+      </div>
+      <div class="activity-item">
+        <div class="activity-dot" style="background:#a78bfa;"></div>
+        <div>
+          <div class="activity-text"><span>Connexion</span> — Depuis Casablanca</div>
+          <div class="activity-time">13 Mai 2026 à 08:30</div>
+        </div>
+      </div>
+ 
+    </div>
+  </div>
         </article>
     </main>
 

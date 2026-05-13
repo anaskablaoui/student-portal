@@ -9,3 +9,27 @@ document.querySelectorAll('.nav-link').forEach(link => {
         document.getElementById(link.dataset.panel).classList.add('active');
     });
 });
+
+const matiereFilter = document.getElementById("matiereFilter");
+
+matiereFilter.addEventListener("change", function () {
+
+    const selected = this.value.trim();
+
+    const rows = document.querySelectorAll("#notesTable tr");
+
+    rows.forEach(row => {
+
+        const matiere = row.dataset.matiere.trim();
+
+        if (selected === "" || matiere == selected) {
+            row.style.display = "";
+        } else {
+            row.style.display = "none";
+        }
+
+    });
+
+});
+
+console.log("hhhhh")

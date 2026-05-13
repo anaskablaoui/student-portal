@@ -21,62 +21,84 @@ body {
 
 /* ── Sidebar ── */
 .sidebar {
-    background: linear-gradient(180deg, #5b7ee5, #7494ec);
-    width: 220px;
-    min-width: 220px;
+    background-color :#5b7ee5;
+    width: 240px;
+    min-width: 240px;
     height: 100vh;
     position: fixed;
     left: 0;
     top: 0;
-    padding: 2rem 0;
-    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
-    z-index: 1000;
     display: flex;
     flex-direction: column;
+    z-index: 1000;
+    box-shadow: 4px 0 24px rgba(0,0,0,0.10);
+    padding: 0;
 }
 
 .sidebar h2 {
-    color: #fff;
-    font-size: 15px;
-    font-weight: 500;
-    padding: 0 1.25rem 1.5rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    margin-bottom: 0.75rem;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 400;
+    opacity: 0.75;
+    padding: 1.6rem 1.5rem 1.2rem;
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+    letter-spacing: 0.02em;
 }
 
 .sidebar ul {
-    list-style: none;
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    padding: 0 0.75rem;
+    gap: 2px;
+    padding: 1rem 0.75rem;
+    flex: 1;
+    overflow-y: auto;
 }
 
 .sidebar ul li a {
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 10px 12px;
-    border-radius: 8px;
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 14px;
+    padding: 10px 14px;
+    border-radius: var(--radius-sm);
+    color: rgba(255,255,255,0.60);
+    font-size: 13.5px;
     cursor: pointer;
-    transition: background 0.2s, color 0.2s;
+    transition: background 0.18s, color 0.18s;
 }
 
 .sidebar ul li a:hover {
-    background: rgba(255, 255, 255, 0.15);
-    color: #fff;
+    background: rgba(255,255,255,0.10);
+    color: #ffffff;
 }
 
 .sidebar ul li a.active {
-    background: rgba(255, 255, 255, 0.25);
-    color: #fff;
+    background: rgba(255,255,255,0.18);
+    color: #ffffff;
     font-weight: 500;
 }
 
-.icon { font-size: 16px; }
+.sidebar form {
+    padding: 0.75rem;
+    border-top: 1px solid rgba(255,255,255,0.10);
+}
 
+.sidebar form button {
+    width: 100%;
+    padding: 9px 0;
+    border: 1px solid rgba(255,255,255,0.22);
+    border-radius: 5px;
+    background: transparent;
+    color: rgba(255,255,255,0.60);
+    font-family: "Poppins", sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.18s, color 0.18s;
+}
+
+.sidebar form button:hover {
+    background: #e53935;
+    color: #ffffff;
+}
 /* ── Main ── */
 main {
     margin-left: 220px;
@@ -399,4 +421,178 @@ tr:last-child td { border-bottom: none; }
 }
 #calendar {
     height: 600px;
+}
+
+.fc {
+    font-family: 'Segoe UI', sans-serif;
+    height: 100%;
+}
+
+/* Toolbar */
+
+.fc-toolbar {
+    margin-bottom: 20px !important;
+}
+
+.fc-toolbar-title {
+    font-size: 22px !important;
+    font-weight: 600 !important;
+    color: #3a3a5c;
+}
+
+/* Buttons */
+
+.fc-button {
+    background: white !important;
+    border: 1px solid rgba(116, 148, 236, 0.18) !important;
+    color: #5b7ee5 !important;
+
+    border-radius: 10px !important;
+
+    padding: 8px 14px !important;
+
+    font-size: 13px !important;
+    font-weight: 500 !important;
+
+    transition: all 0.2s ease !important;
+
+    box-shadow: 0 2px 8px rgba(116, 148, 236, 0.08) !important;
+}
+
+.fc-button:hover {
+    background: #f3f6ff !important;
+    transform: translateY(-1px);
+}
+
+.fc-button-active {
+    background: #7494ec !important;
+    color: white !important;
+    border-color: #7494ec !important;
+}
+
+/* Calendar container */
+
+.fc-scrollgrid {
+    border: none !important;
+    overflow: hidden;
+    border-radius: 18px;
+}
+
+/* Day headers */
+
+.fc-col-header-cell {
+    background: #f8f9ff;
+    padding: 14px 0 !important;
+}
+
+.fc-col-header-cell-cushion {
+    text-decoration: none !important;
+    color: #6b7280 !important;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* Time labels */
+
+.fc-timegrid-slot-label-cushion {
+    color: #9ca3af;
+    font-size: 12px;
+}
+
+/* Grid borders */
+
+.fc-theme-standard td,
+.fc-theme-standard th {
+    border-color: rgba(116, 148, 236, 0.08) !important;
+}
+
+/* Time slots */
+
+.fc-timegrid-slot {
+    height: 65px !important;
+}
+
+/* Current time line */
+
+.fc-timegrid-now-indicator-line {
+    border-color: #ef4444 !important;
+}
+
+.fc-timegrid-now-indicator-arrow {
+    border-color: #ef4444 !important;
+}
+
+/* Events */
+
+.fc-event {
+    border: none !important;
+
+    border-radius: 14px !important;
+
+    background: linear-gradient(
+        135deg,
+        #7494ec,
+        #5b7ee5
+    ) !important;
+
+    padding: 6px !important;
+
+    box-shadow:
+        0 4px 14px rgba(91, 126, 229, 0.25);
+
+    transition: all 0.2s ease;
+
+    cursor: pointer;
+}
+
+.fc-event:hover {
+    transform: scale(1.02);
+}
+
+/* Event title */
+
+.fc-event-title {
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* Event hour */
+
+.fc-event-time {
+    font-size: 11px;
+    opacity: 0.9;
+}
+
+/* Today column */
+
+.fc-day-today {
+    background: rgba(116, 148, 236, 0.05) !important;
+}
+
+/* Remove ugly borders */
+
+.fc-theme-standard .fc-scrollgrid {
+    border: none !important;
+}
+
+/* Smooth */
+
+.fc-scroller {
+    scrollbar-width: thin;
+    scrollbar-color: #c9d6ff transparent;
+}
+
+/* Calendar card better spacing */
+
+.calendrier-card {
+    padding: 24px;
+    overflow: hidden;
+}
+
+/* Better responsiveness */
+
+#calendar {
+    width: 100%;
+    height: 100%;
+    min-height: 700px;
 }

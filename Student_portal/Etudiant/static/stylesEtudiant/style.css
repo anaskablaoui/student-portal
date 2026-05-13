@@ -78,6 +78,28 @@ body {
 
 .icon { font-size: 16px; }
 
+.sidebar form {
+    margin-top: auto;
+    padding: 1rem 0.75rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.sidebar form button {
+    width: 100%;
+    padding: 10px 12px;
+    background: rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.sidebar form button:hover {
+    background: #e53935;
+    color: #fff;
+}
 
 /* ── Main ── */
 main {
