@@ -1,18 +1,13 @@
-// Initialize navigation
-function initNav() {
-    const links = document.querySelectorAll(".nav-link");
-    const panels = document.querySelectorAll(".panel");
+document.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', e => {
+        e.preventDefault();
 
-    links.forEach(link => {
-        link.addEventListener("click", (e) => {
-            e.preventDefault();
-            const target = link.getAttribute("data-panel");
-            links.forEach(l => l.classList.remove("active"));
-            link.classList.add("active");
-            panels.forEach(panel => panel.classList.remove("active"));
-            const activePanel = document.getElementById(target);
-            if (activePanel) activePanel.classList.add("active");
-        });
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+
+        link.classList.add('active');
+        document.getElementById(link.dataset.panel).classList.add('active');
     });
-}
+});
+
 

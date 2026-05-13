@@ -13,8 +13,6 @@ from django.http import JsonResponse
 @login_required(login_url='login')
 def dashboard(request):
 
-    no
-
     if request.user.role != 'professeur':
         messages.error(request, "Accès refusé. Vous n'êtes pas un professeur.")
         return redirect('login')  # ou une autre page appropriée
