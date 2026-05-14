@@ -5,7 +5,7 @@ from .forms import RapportForm, absenceForm, messageForm, noteForm,changerPasswo
 from .models import Professeur, Rapport, Message, absence, Note
 from Etudiant.models import Etudiant
 from django.views.generic import ListView
-from Administrateur.models import Session,Matiere
+from Administrateur.models import Session,Matiere,Groupe
 from datetime import datetime
 from django.http import JsonResponse
 from django.contrib.auth import update_session_auth_hash
@@ -13,7 +13,7 @@ from django.contrib.auth import update_session_auth_hash
 
 @login_required(login_url='login')
 def dashboard(request):
-    
+    prof=Professeur.objects.filter(user=request.user).first()
     if request.user.role != 'professeur':
         messages.error(request, "Accès refusé. Vous n'êtes pas un professeur.")
         return redirect('login')  # ou une autre page appropriée
@@ -32,7 +32,7 @@ def dashboard(request):
     mForm = messageForm()
     NoteForm = noteForm()
     PasswordForm=changerPassword()
-
+    groupe=professeur.groupe.all()
     if request.method == 'POST':
         session_id = request.POST.get('session_id')
         if session_id:
@@ -141,7 +141,8 @@ def dashboard(request):
         'etudiants': etudiants,
         'sessions': sessions,
         'selected_session': selected_session,
-        'prof':Professeur.objects.filter(user=request.user).first(),
+        'prof':prof,
+        'groupes':groupe,
         'presence':taux_presence,
         'PasswordForm': PasswordForm,
     })

@@ -127,7 +127,7 @@
                             </thead>
                             <tbody id="absence-table">
                                 {% for etudiant in etudiants %}
-                                    <tr>
+                                    <tr data-seance=" {{etudiant.groupe.id}} ">
                                         <td>{{ etudiant.user.nom }} {{ etudiant.user.prenom }}</td>
                                         <td>{% if selected_session %}{{ selected_session.matiere.nom }}{% else %}-{% endif %}</td>
                                         <td>{% if selected_session %}{{ selected_session.date }}{% else %}-{% endif %}</td>
@@ -151,12 +151,12 @@
             <p class="panel-title">Notes</p>
             <div class="note-content">
                 <div class="card groupe">
-                    {% if sessions %}
+                    {% if groupes %}
                         <label for="note-session">Séance</label>
-                        <select id="note-session" name="session_id" form="note-form">
-                            {% for sess in sessions %}
-                                <option value="{{ sess.id }}" {% if selected_session and sess.id == selected_session.id %}selected{% endif %}>
-                                    {{ sess.date }} - {{ sess.matiere.nom }} - {{ sess.groupe.nom }}
+                        <select id="note-groupe" name="session_id" form="note-form">
+                            {% for groupe in groupes %}
+                                <option value="{{ groupe.id }}" {% if selected_session and sess.id == selected_session.id %}selected{% endif %}>
+                                    {{groupe.nom}}
                                 </option>
                             {% endfor %}
                         </select>
@@ -177,9 +177,9 @@
                             <thead>
                                 <tr><th>Étudiant</th><th>Note /20</th></tr>
                             </thead>
-                            <tbody>
+                            <tbody id="noteTable">
                                 {% for etudiant in etudiants %}
-                                    <tr>
+                                    <tr data-groupe=" {{ etudiant.groupe.id}} ">
                                         <td>{{ etudiant.user.nom }} {{ etudiant.user.prenom }}</td>
                                         <td>
                                             <input type="number" name="note_{{ etudiant.id }}" value="{{ etudiant.note_value }}" min="0" max="20" step="0.01" placeholder="Ex: 15.5">
@@ -313,11 +313,7 @@
                         {{ PasswordForm.as_p }}
                         <button type="submit" name="submit_password">Changer le mot de passe</button>
                     </form>
-                </div>
-               
-            
-                
-                
+                </div>    
             </div>
          </article>
     </main>
