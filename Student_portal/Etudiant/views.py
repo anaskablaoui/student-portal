@@ -3,11 +3,13 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView
 from Professeur.models import Note, Rapport,absence,Message
 from .models import Etudiant
-from .forms import EtudiantForm
+from .forms import EtudiantForm,changerPassword
 from django.db.models import Avg
 from datetime import datetime
 from django.http import JsonResponse
 from Administrateur.models import Session,Matiere
+from django.contrib import messages
+from django.contrib.auth import update_session_auth_hash
 
 @login_required(login_url='/login/')
 def etudiant_dashboard(request):
@@ -15,7 +17,8 @@ def etudiant_dashboard(request):
     notes = Note.objects.filter(etudiant=etudiant).select_related(
         'matiere'
     )
-
+    PasswordForm=changerPassword()
+    form = EtudiantForm()
     matieres = Matiere.objects.all()
 
     context = {
@@ -23,18 +26,47 @@ def etudiant_dashboard(request):
         'matieres': matieres,
     }
 
+    total_seances = Session.objects.filter(groupe=etudiant.groupe).count()
 
+    # Nombre d'absences de cet étudiant (status=True = absent)
+    absences_count = absence.objects.filter(
+        etudiant=etudiant,
+        status=True
+        ).count()
+
+    # Taux de présence
+    if total_seances > 0:
+        taux_presence = round(((total_seances - absences_count) / total_seances) * 100, 1)
+    else:
+        taux_presence = 0
     
     if request.method == 'POST':
-        etudiant = Etudiant.objects.get(user=request.user)
-        form = EtudiantForm(request.POST)
-        if form.is_valid():
-            message = form.save(commit=False)  
-            message.user = request.user        
-            message.save()                     
-            return redirect('etudiant_dashboard')  
-    else:
-        form = EtudiantForm()
+        if 'submit-demande' in request.POST:
+            etudiant = Etudiant.objects.get(user=request.user)
+            form = EtudiantForm(request.POST)
+            if form.is_valid():
+                message = form.save(commit=False)  
+                message.user = request.user        
+                message.save()                     
+                return redirect('etudiant_dashboard')  
+        elif 'submit_password' in request.POST:
+            PasswordForm = changerPassword(request.POST)
+            if PasswordForm.is_valid():
+                ancien = PasswordForm.cleaned_data['passwordExistant']
+                nouveau = PasswordForm.cleaned_data['nouveauPassword']
+        
+                if not request.user.check_password(ancien):
+                    messages.error(request, "Mot de passe actuel incorrect.")
+                else:
+                    request.user.set_password(nouveau)
+                    request.user.save()
+                    update_session_auth_hash(request, request.user)
+                    messages.success(request, "Mot de passe modifié avec succès.")
+            else:
+                messages.error(request, "Formulaire invalide.")
+    
+            return redirect('etudiant_dashboard')
+        
 
     return render(request, 'etudiant.html', {
         'etudiant' : etudiant,
@@ -44,6 +76,8 @@ def etudiant_dashboard(request):
         'form'     : form,
         'notes': notes,
         'matieres': matieres,
+        'presence':taux_presence,
+        'PasswordForm':PasswordForm
     })
     
 @login_required(login_url='login')

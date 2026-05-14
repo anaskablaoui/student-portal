@@ -310,12 +310,12 @@
                 <div class="status-dot"></div>
                 </div>
                 <div class="hero-info">
-                <div class="role-badge" id="roleLabel">Professeur</div>
-                <h2 id="fullName">{{prof.user.nom}} {{prof.user.prenom}} </h2>
+                <div class="role-badge" id="roleLabel">Etudiant</div>
+                <h2 id="fullName">{{etudiant.user.nom}} {{etudiant.user.prenom}} </h2>
                 <div class="hero-meta">
                     <span>
                     <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,12 2,6"/></svg>
-                    <span id="emailDisplay"> {{prof.user.email}} </span>
+                    <span id="emailDisplay"> {{etudiant.user.email}} </span>
                     </span>
                     
                 </div>
@@ -350,21 +350,21 @@
             
                 <div class="info-row">
                     <div class="info-label"> Prenom </div>
-                    <input class="editable-field" id="firstName" value=" {{prof.user.prenom}} " disabled onchange="syncName()"/>
+                    <input class="editable-field" id="firstName" value=" {{etudiant.user.prenom}} " disabled onchange="syncName()"/>
                 </div>
                 <div class="info-row">
                     <div class="info-label"> Nom</div>
-                    <input class="editable-field" id="lastName" value="  {{prof.user.nom}}" disabled onchange="syncName()"/>
+                    <input class="editable-field" id="lastName" value="  {{etudiant.user.nom}}" disabled onchange="syncName()"/>
                 </div>
                 <div class="info-row">
                     <div class="info-label">Email </div>
-                    <input class="editable-field" id="email" value="{{prof.user.email}}" disabled onchange="syncEmail()"/>
+                    <input class="editable-field" id="email" value="{{etudiant.user.email}}" disabled onchange="syncEmail()"/>
                 </div>
                 
                 
                 <div class="info-row">
                     <div class="info-label"> CIN </div>
-                    <input class="editable-field" id="cin" value="{{prof.CIN}}" disabled/>
+                    <input class="editable-field" id="cin" value="{{etudiant.CIN}}" disabled/>
                 </div>
                 </div>
             
@@ -373,17 +373,17 @@
                 <div class="card-title">Informations professionnelles</div>
             
                 <div class="info-row">
-                    <div class="info-label">Rôle</div>  
-                    <div class="info-value" id="roleDisplay">{{prof.user.role}} </div>
+                    <div class="info-label">Groupe</div>  
+                    <div class="info-value" id="roleDisplay">{{etudiant.groupe}} </div>
                 </div>
                 <div class="info-row">
                     <div class="info-label">filier</div>
-                    <input class="editable-field" value="{{ prof.groupe.first.filier.nom }}" disabled/>
+                    <input class="editable-field" value="{{ etudiant.groupe.filier.nom }}" disabled/>
                 </div>
                
                 <div class="info-row">
                     <div class="info-label">Matricule</div>
-                    <div class="info-value">{{prof.user.matricule}} </div>
+                    <div class="info-value">{{ etudiant.user.matricule }} </div>
                 </div>
                 </div>
                 <div class="changerPassword">
