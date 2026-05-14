@@ -104,6 +104,21 @@ class absenceForm(forms.ModelForm):
 
 
 class messageForm(forms.ModelForm):
+    
+    TYPE_CHOICES = [
+        ('','choisir le type de messaage'),
+        ('demande document','demande document'),
+        ('reclamation','reclamation'),
+        ('autre','autreddd')
+    ]
+    
+    obj = forms.CharField(label='Object',
+                          widget=forms.TextInput(attrs={
+                              'class':'form-control',
+                              'placehoder':'rediger votre objet'
+                          }))
+    type =forms.ChoiceField(label='Type',
+                            choices=TYPE_CHOICES)
     description = forms.CharField(label='Message', widget=forms.Textarea(attrs={
         'class': 'form-control',
         'rows': 5,
@@ -112,10 +127,8 @@ class messageForm(forms.ModelForm):
     
     class Meta:
         model = Message
-        fields = ['description']
-        labels = {
-            'description': 'Message',
-        }
+        fields = ['obj','type','description']
+        
     
     
 class noteForm(forms.Form):

@@ -199,36 +199,7 @@
                     
                     <div class="prof-section">
                         <div class="section-label"> Messages </div>
-                            <div class="msg-list">
-                                {% for msg in messages %}
-                                <div class="inbox-item {% if not msg.lu %}unread{% endif %}">
-                                <div class="inbox-top">
-                                    <div class="prof-info">
-                                    <div class="avatar">{{ msg.user.nom }}{{ msg.user.prenom }}</div>
-                                    </div>
-                                    <div class="msg-date">{{ msg.dateEnvoi|date:"d M, H:i" }}</div>
-                                </div>
-                                <div class="msg-subject">{{ msg.objet }}</div>
-                                <div class="msg-preview">{{ msg.description|truncatechars:120 }}</div>
-                                </div>
-                                {% empty %}
-                                <p style="font-size:13px; color:#9ca3af;">Aucun message reçu.</p>
-                                {% endfor %}
-                            </div>
-
-                            {% if messages %}
-                                <div class="detail-card">
-                                    <div class="detail-header">
-                                    <div class="avatar-lg">{{ messages.0.user.nom }}{{ messages.0.user.prenom }}</div>
-                                    <div>
-                                        <div class="badge-prof"> Professeur</div>
-                                    </div>
-                                    </div>
-                                    <div class="detail-subject">{{ messages.0.objet }}</div>
-                                    <div class="detail-body">{{ messages.0.description|linebreaksbr }}</div>
-                                    <div class="detail-date">{{ messages.0.dateEnvoi|date:"d M Y à H:i" }}</div>
-                                </div>
-                            {% endif %}
+                            
                     </div>
                 </div>
             </div>

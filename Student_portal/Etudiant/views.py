@@ -3,13 +3,14 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView
 from Professeur.models import Note, Rapport,absence,Message
 from .models import Etudiant
-from .forms import EtudiantForm,changerPassword
+from .forms import changerPassword
 from django.db.models import Avg
 from datetime import datetime
 from django.http import JsonResponse
 from Administrateur.models import Session,Matiere
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
+from Professeur.forms import messageForm
 
 @login_required(login_url='/login/')
 def etudiant_dashboard(request):
@@ -20,7 +21,7 @@ def etudiant_dashboard(request):
         'matiere'
     )
     PasswordForm=changerPassword()
-    form = EtudiantForm()
+    form = messageForm()
     matieres = Matiere.objects.all()
 
     context = {
@@ -45,7 +46,7 @@ def etudiant_dashboard(request):
     if request.method == 'POST':
         if 'submit-demande' in request.POST:
             etudiant = Etudiant.objects.get(user=request.user)
-            form = EtudiantForm(request.POST)
+            form = messageForm(request.POST)
             if form.is_valid():
                 message = form.save(commit=False)  
                 message.user = request.user        
@@ -74,7 +75,7 @@ def etudiant_dashboard(request):
         'etudiant' : etudiant,
         'rapport':rapport,
         'absences' : absence.objects.filter(etudiant=etudiant),
-        'messages' : Message.objects.all(),
+        'msgs' : Message.objects.all(),
         'form'     : form,
         'notes': notes,
         'matieres': matieres,

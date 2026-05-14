@@ -64,17 +64,6 @@ class EtudiantChangeForm(forms.ModelForm):
             self.fields['prenom'].initial = self.instance.user.prenom
             self.fields['email'].initial = self.instance.user.email
 
-class EtudiantForm(forms.ModelForm):
-    description = forms.CharField(
-        label="Message",
-        widget=forms.Textarea(attrs={
-            'rows': 4,
-            'placeholder': 'Rédigez votre message ici...',
-        })
-    )
-    class Meta:
-        model = Message
-        fields = ['description']
         
 class changerPassword(forms.Form):
     passwordExistant = forms.CharField(label="password existant", widget=forms.PasswordInput(attrs={

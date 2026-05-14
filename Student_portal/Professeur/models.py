@@ -30,6 +30,8 @@ class Message(models.Model):
     user = models.ForeignKey(custumUser, on_delete=models.CASCADE)
     description = models.CharField(max_length=200)
     dateEnvoi = models.DateTimeField(auto_now_add=True)
+    type=models.CharField(max_length=70)
+    obj=models.CharField(max_length=150)
     def __str__(self):
         return self.description
 
