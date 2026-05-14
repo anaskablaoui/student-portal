@@ -70,6 +70,7 @@
             <li><a href="#" class="nav-link" data-panel="Absence"><span class="icon"></span> Absence</a></li>
             <li><a href="#" class="nav-link" data-panel="note"><span class="icon"></span> Note</a></li>
             <li><a href="#" class="nav-link" data-panel="rapport"><span class="icon"></span> Message / Rapport</a></li>
+            <li><a href="#" class="nav-link" data-panel="profil"><span class="icon"></span>Profile</a></li>
             
         </ul>
         <form action=" {% url 'logout' %} " method="post">
@@ -217,6 +218,108 @@
                 </div>
             </div>
         </article>
+        <article id="profil" class="panel">
+            <div class="page-header">
+                <h1>Mon Profil</h1>
+                <p>Gérez vos informations personnelles et vos préférences</p>
+            </div>
+ 
+            <!-- HERO -->
+            <div class="profile-hero">
+                <div class="avatar-wrap">
+                <div class="avatar" id="avatarInitials">AB</div>
+                <div class="status-dot"></div>
+                </div>
+                <div class="hero-info">
+                <div class="role-badge" id="roleLabel">Professeur</div>
+                <h2 id="fullName">{{prof.user.nom}} {{prof.user.prenom}} </h2>
+                <div class="hero-meta">
+                    <span>
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,12 2,6"/></svg>
+                    <span id="emailDisplay"> {{prof.user.email}} </span>
+                    </span>
+                    
+                </div>
+                </div>
+                
+            </div>
+            
+            <!-- STATS -->
+            <div class="grid-3">
+                <div class="stat-card">
+                <div class="stat-icon" style="background:#eef0fb;">📚</div>
+                <div class="stat-value"> {{prof.groupe.count|default:'0'}} </div>
+                <div class="stat-label">Groupe Enseigne</div>
+                </div>
+                <div class="stat-card">
+                <div class="stat-icon" style="background:#fef3c7;">👥</div>
+                <div class="stat-value">{{etudiants.count|default:'0'}}</div>
+                <div class="stat-label">Étudiants</div>
+                </div>
+                <div class="stat-card">
+                <div class="stat-icon" style="background:#dcfce7;">✅</div>
+                <div class="stat-value">{{presence}}</div>
+                <div class="stat-label">Taux de présence</div>
+                </div>
+            </div>
+            
+            <div class="grid-2">
+            
+                <!-- INFO PERSONNELLES -->
+                <div class="card">
+                <div class="card-title">Informations personnelles</div>
+            
+                <div class="info-row">
+                    <div class="info-label"> Prenom </div>
+                    <input class="editable-field" id="firstName" value=" {{prof.user.prenom}} " disabled onchange="syncName()"/>
+                </div>
+                <div class="info-row">
+                    <div class="info-label"> Nom</div>
+                    <input class="editable-field" id="lastName" value="  {{prof.user.nom}}" disabled onchange="syncName()"/>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Email </div>
+                    <input class="editable-field" id="email" value="{{prof.user.email}}" disabled onchange="syncEmail()"/>
+                </div>
+                
+                
+                <div class="info-row">
+                    <div class="info-label"> CIN </div>
+                    <input class="editable-field" id="cin" value="{{prof.CIN}}" disabled/>
+                </div>
+                </div>
+            
+                <!-- INFO PROFESSIONNELLES -->
+                <div class="card">
+                <div class="card-title">Informations professionnelles</div>
+            
+                <div class="info-row">
+                    <div class="info-label">Rôle</div>  
+                    <div class="info-value" id="roleDisplay">{{prof.user.role}} </div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">filier</div>
+                    <input class="editable-field" value="{{ prof.groupe.first.filier.nom }}" disabled/>
+                </div>
+               
+                <div class="info-row">
+                    <div class="info-label">Matricule</div>
+                    <div class="info-value">{{prof.user.matricule}} </div>
+                </div>
+                </div>
+                <div class="changerPassword">
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ PasswordForm.as_p }}
+                        <button type="submit" name="submit_password">Changer le mot de passe</button>
+                    </form>
+                </div>
+               
+            
+                
+                
+            </div>
+         </article>
     </main>
 
     

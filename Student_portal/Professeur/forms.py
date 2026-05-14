@@ -128,4 +128,24 @@ class noteForm(forms.Form):
     }))
     
     
-        
+class changerPassword(forms.Form):
+    passwordExistant = forms.CharField(label="password existant", widget=forms.PasswordInput(attrs={
+        'class': 'input',
+        'placeholder': 'password d avant'
+    }))
+    nouveauPassword = forms.CharField(label='nouveau password', widget=forms.PasswordInput(attrs={
+        'class': 'input',
+        'placeholder': 'nouveau password'
+    }))
+    passwordConfirm = forms.CharField(label='confirmer password', widget=forms.PasswordInput(attrs={
+        'class': 'input',
+        'placeholder': 'confirmer password'
+    }))
+
+    def clean(self):
+        cleaned_data = super().clean()
+        p1 = cleaned_data.get("nouveauPassword")
+        p2 = cleaned_data.get("passwordConfirm")
+        if p1 and p2 and p1 != p2:
+            raise forms.ValidationError("Les mots de passe ne correspondent pas.")
+        return cleaned_data

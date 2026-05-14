@@ -1,18 +1,19 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .forms import RapportForm, absenceForm, messageForm, noteForm
+from .forms import RapportForm, absenceForm, messageForm, noteForm,changerPassword
 from .models import Professeur, Rapport, Message, absence, Note
 from Etudiant.models import Etudiant
 from django.views.generic import ListView
-from Administrateur.models import Session
+from Administrateur.models import Session,Matiere
 from datetime import datetime
 from django.http import JsonResponse
+from django.contrib.auth import update_session_auth_hash
 
 
 @login_required(login_url='login')
 def dashboard(request):
-
+    
     if request.user.role != 'professeur':
         messages.error(request, "Accès refusé. Vous n'êtes pas un professeur.")
         return redirect('login')  # ou une autre page appropriée
@@ -30,6 +31,7 @@ def dashboard(request):
     rapportForm = RapportForm()
     mForm = messageForm()
     NoteForm = noteForm()
+    PasswordForm=changerPassword()
 
     if request.method == 'POST':
         session_id = request.POST.get('session_id')
@@ -81,6 +83,23 @@ def dashboard(request):
             else:
                 messages.error(request, "Aucune séance disponible pour enregistrer la note.")
             return redirect('professeur:dashboard')
+        elif 'submit_password' in request.POST:
+            PasswordForm = changerPassword(request.POST)
+            if PasswordForm.is_valid():
+                ancien = PasswordForm.cleaned_data['passwordExistant']
+                nouveau = PasswordForm.cleaned_data['nouveauPassword']
+        
+                if not request.user.check_password(ancien):
+                    messages.error(request, "Mot de passe actuel incorrect.")
+                else:
+                    request.user.set_password(nouveau)
+                    request.user.save()
+                    update_session_auth_hash(request, request.user)
+                    messages.success(request, "Mot de passe modifié avec succès.")
+            else:
+                messages.error(request, "Formulaire invalide.")
+    
+            return redirect('professeur:dashboard')
 
     if not selected_session and sessions.exists():
         selected_session = sessions.first()
@@ -101,6 +120,19 @@ def dashboard(request):
         etudiant.absent = existing_absences.get(etudiant.id, False)
         etudiant.note_value = existing_notes.get(etudiant.id, '')
 
+    absences_count = absence.objects.filter(
+    seance__in=sessions,  # sessions déjà filtré par le prof en haut de ta vue
+    status=True
+).count()
+
+# Total des présences possibles (nb étudiants × nb séances)
+    total_possible = etudiants.count() * sessions.count()
+
+# Taux de présence
+    if total_possible > 0:
+        taux_presence = round(((total_possible - absences_count) / total_possible) * 100, 1)
+    else:
+        taux_presence = 0
     return render(request, 'index.html', {
         'form': form,
         'rapportForm': rapportForm,
@@ -109,6 +141,9 @@ def dashboard(request):
         'etudiants': etudiants,
         'sessions': sessions,
         'selected_session': selected_session,
+        'prof':Professeur.objects.filter(user=request.user).first(),
+        'presence':taux_presence,
+        'PasswordForm': PasswordForm,
     })
 
 
