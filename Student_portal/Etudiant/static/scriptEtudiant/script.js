@@ -11,12 +11,32 @@ document.querySelectorAll('.nav-link').forEach(link => {
 });
 
 const matiereFilter = document.getElementById("matiereFilter");
+const matiereFilterAbsence = document.getElementById("matiereFilter2");
+
+matiereFilterAbsence.addEventListener("change",function () {
+    const selected = this.value.trim();
+
+    const rows = document.querySelectorAll("#absenceTable tr")
+
+    rows.forEach(row => {
+        const absence = row.dataset.matiere.trim();
+
+        if (selected === "" || absence == selected) {
+            row.style.display = "";
+        }
+        else{
+            row.style.display = "none";
+        }
+    });
+});
 
 matiereFilter.addEventListener("change", function () {
 
     const selected = this.value.trim();
 
     const rows = document.querySelectorAll("#notesTable tr");
+
+ 
 
     rows.forEach(row => {
 
@@ -30,6 +50,7 @@ matiereFilter.addEventListener("change", function () {
 
     });
 
+    
 });
 
 console.log("hhhhh")

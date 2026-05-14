@@ -13,7 +13,9 @@ from django.contrib.auth import update_session_auth_hash
 
 @login_required(login_url='/login/')
 def etudiant_dashboard(request):
+    
     etudiant = Etudiant.objects.get(user=request.user)
+    rapport=Rapport.objects.filter(etudiant=etudiant)
     notes = Note.objects.filter(etudiant=etudiant).select_related(
         'matiere'
     )
@@ -70,7 +72,7 @@ def etudiant_dashboard(request):
 
     return render(request, 'etudiant.html', {
         'etudiant' : etudiant,
-        
+        'rapport':rapport,
         'absences' : absence.objects.filter(etudiant=etudiant),
         'messages' : Message.objects.all(),
         'form'     : form,

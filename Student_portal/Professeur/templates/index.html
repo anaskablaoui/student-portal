@@ -125,7 +125,7 @@
                                     <th>Absent</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="absence-table">
                                 {% for etudiant in etudiants %}
                                     <tr>
                                         <td>{{ etudiant.user.nom }} {{ etudiant.user.prenom }}</td>
