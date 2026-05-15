@@ -75,7 +75,7 @@ def etudiant_dashboard(request):
         'etudiant' : etudiant,
         'rapport':rapport,
         'absences' : absence.objects.filter(etudiant=etudiant),
-        'msgs' : Message.objects.all(),
+        'msgs' : Message.objects.filter(user=request.user),
         'form'     : form,
         'notes': notes,
         'matieres': matieres,
@@ -83,25 +83,17 @@ def etudiant_dashboard(request):
         'PasswordForm':PasswordForm
     })
     
-@login_required(login_url='login')
+@login_required(login_url='/login/')
 def calendrier_events(request):
+    etudiant = Etudiant.objects.get(user=request.user)
+    sessions = Session.objects.filter(
+        groupe=etudiant.groupe
+    ).select_related('matiere', 'groupe')
 
     events = []
-
-    sessions = Session.objects.select_related('matiere', 'groupe')
-
     for session in sessions:
-
-        start = datetime.combine(
-            session.date,
-            session.heure_depart
-        )
-
-        end = datetime.combine(
-            session.date,
-            session.heure_fin
-        )
-
+        start = datetime.combine(session.date, session.heure_depart)
+        end = datetime.combine(session.date, session.heure_fin)
         events.append({
             "title": session.matiere.nom,
             "start": start.isoformat(),
@@ -110,8 +102,16 @@ def calendrier_events(request):
                 "groupe": session.groupe.nom if session.groupe else "",
             }
         })
+    return JsonResponse(events, safe=False)
 
-    return JsonResponse(events, safe=False)   
+
+def Bulletin(request):
+    etudiant = Etudiant.objects.get(user=request.user)
+    notes=Note.objects.filter(etudiant=etudiant)
+    return render(request,'bulletin.html',{
+        'etudiant':etudiant,
+        'notes':notes
+    })
 class listeNotes(ListView):
     model = Note
     template_name = 'etudiant.html'

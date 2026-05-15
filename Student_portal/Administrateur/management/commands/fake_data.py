@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from faker import Faker
 import random
-from datetime import timedelta
+from datetime import datetime, date, timedelta
 
 # Models
 from Administrateur.models import Filier, Module, Groupe, Matiere, Salle, Session, Administrateur
@@ -10,62 +10,97 @@ from Etudiant.models import Etudiant
 from Professeur.models import Professeur, absence, Message, Rapport, Note
 
 class Command(BaseCommand):
-    help = 'Génère 10 fausses données par classe avec le mot de passe "password"'
+    help = 'Génère de fausses données de test (20 étudiants, 9 groupes, 10 professeurs, 3 filières, séances en 2026, mot de passe password)'
 
     def handle(self, *args, **kwargs):
         faker = Faker('fr_FR')
 
-        # 1. Filier
+        # 1. Filières
         self.stdout.write("Création des Filières...")
+        filieres_names = [
+            'Informatique et Réseaux',
+            'Gestion des Entreprises',
+            'Sciences et Technologies'
+        ]
         filieres = []
-        for i in range(10):
-            f = Filier.objects.create(nom=faker.unique.job()[:50])
-            filieres.append(f)
-        
-        # 2. Salle
-        self.stdout.write("Création des Salles...")
-        salles = []
-        for i in range(10):
-            s = Salle.objects.create(num=faker.unique.random_int(min=1, max=9999))
-            salles.append(s)
+        for nom in filieres_names:
+            filieres.append(Filier.objects.create(nom=nom))
 
-        # 3. Module
+        # 2. Modules
         self.stdout.write("Création des Modules...")
         modules = []
-        for i in range(10):
-            m = Module.objects.create(
-                nom=faker.word()[:50],
-                filiere=random.choice(filieres)
+        module_names = [
+            'Programmation Avancée',
+            'Base de Données',
+            'Analyse Financière',
+            'Marketing Digital',
+            'Mathématiques Appliquées',
+            'Physique Informatique',
+            'Systèmes d’Information',
+            'Économie d’Entreprise',
+            'Sécurité des Réseaux'
+        ]
+        for i, nom in enumerate(module_names):
+            module = Module.objects.create(
+                nom=nom,
+                filiere=filieres[i % len(filieres)]
             )
-            modules.append(m)
+            modules.append(module)
 
-        # 4. Groupe
+        # 3. Matières
+        self.stdout.write("Création des Matières...")
+        matiere_names = [
+            'Développement web',
+            'Structures de données',
+            'Systèmes d’exploitation',
+            'Administration des bases de données',
+            'Gestion de projet',
+            'Comptabilité',
+            'Statistiques',
+            'Mathématiques financières',
+            'Physique appliquée',
+            'Algèbre linéaire',
+            'Réseau et sécurité',
+            'Intelligence artificielle',
+            'Design d’interface',
+            'Droit du numérique',
+            'Entrepreneuriat'
+        ]
+        matieres = []
+        for i, nom in enumerate(matiere_names):
+            matieres.append(Matiere.objects.create(
+                nom=nom,
+                module=modules[i % len(modules)]
+            ))
+
+        # 4. Groupes
         self.stdout.write("Création des Groupes...")
         groupes = []
-        for i in range(10):
-            g = Groupe.objects.create(
-                nom=faker.unique.lexify(text='??????').upper(),
-                filier=random.choice(filieres)
-            )
-            groupes.append(g)
+        groupe_labels = [
+            'G1A', 'G1B', 'G1C',
+            'G2A', 'G2B', 'G2C',
+            'G3A', 'G3B', 'G3C'
+        ]
+        for i, label in enumerate(groupe_labels):
+            groupes.append(Groupe.objects.create(
+                nom=label,
+                filier=filieres[i % len(filieres)]
+            ))
 
-        # 5. Matiere
-        self.stdout.write("Création des Matières...")
-        matieres = []
-        for i in range(10):
-            mat = Matiere.objects.create(
-                nom=faker.word()[:50],
-                module=random.choice(modules)
-            )
-            matieres.append(mat)
+        # 5. Salles
+        self.stdout.write("Création des Salles...")
+        salles = []
+        for i in range(1, 11):
+            salles.append(Salle.objects.create(num=100 + i))
 
-        # Users and Roles
+        # 6. Utilisateurs et rôles
         self.stdout.write("Création des Utilisateurs et Rôles...")
-        # 10 Administrateurs
+
+        self.stdout.write("  Création des Administrateurs...")
         admins = []
-        for i in range(10):
+        for i in range(3):
             user = custumUser.objects.create_user(
-                matricule=faker.unique.numerify(text='M-#######'),
+                matricule=f'A-{faker.unique.numerify(text="#######")}',
                 email=faker.unique.email()[:50],
                 password='password',
                 nom=faker.last_name()[:50],
@@ -78,30 +113,11 @@ class Command(BaseCommand):
             )
             admins.append(a)
 
-        # 10 Etudiants
-        etudiants = []
-        for i in range(10):
-            user = custumUser.objects.create_user(
-                matricule=faker.unique.numerify(text='E-#######'),
-                email=faker.unique.email()[:50],
-                password='password',
-                nom=faker.last_name()[:50],
-                prenom=faker.first_name()[:50],
-                role='etudiant'
-            )
-            e = Etudiant.objects.create(
-                user=user,
-                CIN=faker.unique.lexify(text='??######').upper(),
-                date_naissance=faker.date_of_birth(minimum_age=18, maximum_age=30),
-                groupe=random.choice(groupes)
-            )
-            etudiants.append(e)
-
-        # 10 Professeurs
+        self.stdout.write("  Création des Professeurs...")
         professeurs = []
         for i in range(10):
             user = custumUser.objects.create_user(
-                matricule=faker.unique.numerify(text='P-#######'),
+                matricule=f'P-{faker.unique.numerify(text="#######")}',
                 email=faker.unique.email()[:50],
                 password='password',
                 nom=faker.last_name()[:50],
@@ -112,60 +128,83 @@ class Command(BaseCommand):
                 user=user,
                 CIN=faker.unique.lexify(text='??######').upper()
             )
-            p.groupe.add(*random.sample(groupes, random.randint(1, min(3, len(groupes)))))
+            p.groupe.add(*random.sample(groupes, random.randint(1, 3)))
             professeurs.append(p)
+
+        self.stdout.write("  Création des Étudiants...")
+        etudiants = []
+        for i in range(20):
+            user = custumUser.objects.create_user(
+                matricule=f'E-{faker.unique.numerify(text="#######")}',
+                email=faker.unique.email()[:50],
+                password='password',
+                nom=faker.last_name()[:50],
+                prenom=faker.first_name()[:50],
+                role='etudiant'
+            )
+            etudiants.append(Etudiant.objects.create(
+                user=user,
+                CIN=faker.unique.lexify(text='??######').upper(),
+                date_naissance=faker.date_of_birth(minimum_age=18, maximum_age=24),
+                groupe=random.choice(groupes)
+            ))
 
         all_users = list(custumUser.objects.all())
 
-        # 6. Session
-        self.stdout.write("Création des Sessions...")
+        # 7. Sessions en 2026
+        self.stdout.write("Création des Sessions 2026...")
         sessions = []
-        for i in range(10):
-            heure_depart = faker.time_object()
-            heure_fin = (faker.date_time() + timedelta(hours=2)).time()
-            s = Session.objects.create(
+        for i in range(20):
+            start_hour = random.randint(8, 16)
+            start_minute = random.choice([0, 15, 30, 45])
+            heure_depart = datetime(2026, 1, 1, start_hour, start_minute).time()
+            duree = random.choice([1, 2, 3])
+            heure_fin = (datetime(2026, 1, 1, start_hour, start_minute) + timedelta(hours=duree)).time()
+            date_session = faker.date_between(start_date=date(2026, 1, 1), end_date=date(2026, 12, 31))
+            sessions.append(Session.objects.create(
                 matiere=random.choice(matieres),
                 groupe=random.choice(groupes),
-                date=faker.date_between(start_date='-1y', end_date='today'),
+                date=date_session,
                 heure_depart=heure_depart,
                 heure_fin=heure_fin
-            )
-            sessions.append(s)
+            ))
 
-        # 7. Absence
+        # 8. Absences
         self.stdout.write("Création des Absences...")
-        for i in range(10):
+        for i in range(30):
             absence.objects.create(
                 seance=random.choice(sessions),
                 etudiant=random.choice(etudiants),
-                status=faker.boolean()
+                status=random.choice([True, False])
             )
 
-        # 8. Message
+        # 9. Messages
         self.stdout.write("Création des Messages...")
-        for i in range(10):
+        for i in range(20):
             Message.objects.create(
                 user=random.choice(all_users),
-                description=faker.sentence()[:200]
+                description=faker.sentence(nb_words=12)[:200],
+                type=random.choice(['question', 'annonce', 'demande']),
+                obj=faker.sentence(nb_words=4)[:150]
             )
 
-        # 9. Rapport
+        # 10. Rapports
         self.stdout.write("Création des Rapports...")
-        for i in range(10):
+        for i in range(20):
             Rapport.objects.create(
                 etudiant=random.choice(etudiants),
                 professeur=random.choice(professeurs),
-                description=faker.sentence()[:200],
-                date=faker.date_between(start_date='-1y', end_date='today')
+                description=faker.paragraph(nb_sentences=2)[:200],
+                date=faker.date_between(start_date=date(2026, 1, 1), end_date=date(2026, 12, 31))
             )
 
-        # 10. Note
+        # 11. Notes
         self.stdout.write("Création des Notes...")
-        for i in range(10):
+        for i in range(30):
             Note.objects.create(
                 etudiant=random.choice(etudiants),
                 matiere=random.choice(matieres),
-                note=round(random.uniform(0, 20), 2)
+                note=round(random.uniform(5, 20), 2)
             )
 
-        self.stdout.write(self.style.SUCCESS('Les données ont été générées avec succès !'))
+        self.stdout.write(self.style.SUCCESS('Les données de test ont été générées avec succès !'))

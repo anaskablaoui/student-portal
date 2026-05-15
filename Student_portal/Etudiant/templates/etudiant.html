@@ -8,58 +8,48 @@
     <title>Dashboard</title>
     <link rel="stylesheet" href=" {%static 'stylesEtudiant/style.css'%} ">
     <script defer src="{% static "scriptEtudiant/script.js" %}" ></script>
-    <script defer>     // Inline calendar initialization
-        document.addEventListener('DOMContentLoaded', function() {
-
-    const calendarEl = document.getElementById('calendar');
-
-    const calendar = new FullCalendar.Calendar(calendarEl, {
-
-        initialView: 'timeGridWeek',
-
-        locale: 'fr',
-
-        firstDay: 1,
-
-        allDaySlot: false,
-
-        slotMinTime: "08:00:00",
-        slotMaxTime: "20:00:00",
-
-        nowIndicator: true,
-
-        height: "auto",
-
-        expandRows: true,
-
-        headerToolbar: {
-            left: 'prev,next',
-            center: 'title',
-            right: 'today,timeGridWeek,timeGridDay'
-        },
-
-        events: '/calendar/events/',
-
-        eventTimeFormat: {
-            hour: '2-digit',
-            minute: '2-digit',
-            meridiem: false
-        },
-
-        eventDidMount: function(info){
-
-            info.el.style.boxShadow =
-            "0 4px 12px rgba(0,0,0,0.08)";
-
-        }
-
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+<script defer>
+    document.addEventListener('DOMContentLoaded', function() {
+        const calendarEl = document.getElementById('calendar');
+        const calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'timeGridWeek',
+            locale: 'fr',
+            firstDay: 1,
+            allDaySlot: false,
+            slotMinTime: "08:00:00",
+            slotMaxTime: "20:00:00",
+            nowIndicator: true,
+            height: "auto",
+            expandRows: true,
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'timeGridWeek,timeGridDay'
+            },
+            events: '{% url "etudiant_events" %}',  // ← URL de l'étudiant
+            eventTimeFormat: {
+                hour: '2-digit',
+                minute: '2-digit',
+                meridiem: false
+            },
+            eventDidMount: function(info) {
+                info.el.style.boxShadow = "0 4px 12px rgba(0,0,0,0.08)";
+            },
+            eventContent: function(arg) {
+                return {
+                    html: `
+                        <div style="padding:4px 6px;">
+                            <div style="font-weight:600;font-size:13px;">${arg.event.title}</div>
+                            <div style="font-size:11px;opacity:.85;">${arg.event.extendedProps.groupe}</div>
+                        </div>
+                    `
+                };
+            }
+        });
+        calendar.render();
     });
-
-    calendar.render();
-
-    
-
-});</script>
+</script>
 </head> 
 <body>
     <aside class="sidebar">
@@ -83,7 +73,7 @@
             <p class="panel-title">Calendrier</p>
             <div class="calendrier-content">
                 <div class="card calendrier-card">
-                    <div class="calendar"></div>
+                    <div id="calendar"></div>
                 </div>
             </div>
         </article>
@@ -159,7 +149,7 @@
                         <div class="stat"><div class="lbl">Moyenne</div></div>
                         <div class="stat"><div class="lbl">Max</div ></div>
                         <div class="stat"><div class="lbl">Min</div></div>
-                        <div class="stat"><button><a href="{% url 'statistics' %}">Voir les statistiques</a></button></div>
+                        <div class="stat"><button><a href="{% url 'imprimerBultin' %}">imprimer Bulletin</a></button></div>
                     </div>
                 </div>
                 <div class="card tableau">
@@ -192,14 +182,20 @@
                    <form action="{% url 'etudiant_dashboard' %}" method="post">
                         {% csrf_token %}
                         {{ form.as_p }} 
-                        <button type="submit" class="btn-valider">Envoyer</button>
+                        <button type="submit"  name="submit-demande" class="btn-valider">Envoyer</button>
                    </form>
                 </div>
                 <div class="card rapport-list">
                     
                     <div class="prof-section">
                         <div class="section-label"> Messages </div>
-                            
+                            {% for m in msgs %}
+                                <div class="card">
+                                    <h3> Objet:{{m.obj}} </h3>
+                                    <span>type: {{m.type}}</span>
+                                    <span>{{m.description}}</span>
+                                </div>
+                            {% endfor %}
                     </div>
                 </div>
             </div>

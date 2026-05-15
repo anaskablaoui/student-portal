@@ -828,3 +828,22 @@ tr:last-child td { border-bottom: none; }
 #profil .activity-text { font-size: 13px; color: #1a1d2e; line-height: 1.4; }
 #profil .activity-text span { font-weight: 600; }
 #profil .activity-time { font-size: 11px; color: #7a7f9a; margin-top: 2px; }
+
+
+.fc-event {
+
+    background: red !important;
+
+    border: none !important;
+
+    color: white !important;
+
+}
+
+.fc-timegrid-event {
+
+    background: red !important;
+
+    color: white !important;
+
+}

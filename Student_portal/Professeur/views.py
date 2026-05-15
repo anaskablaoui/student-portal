@@ -133,6 +133,8 @@ def dashboard(request):
         taux_presence = round(((total_possible - absences_count) / total_possible) * 100, 1)
     else:
         taux_presence = 0
+        
+
     return render(request, 'index.html', {
         'form': form,
         'rapportForm': rapportForm,

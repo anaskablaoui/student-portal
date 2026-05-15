@@ -8,59 +8,9 @@
     <link rel="stylesheet" href="{% static 'stylesProfesseur/style.css' %}">
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
     <script defer src="{% static 'scriptProfesseur/script.js' %}"></script>
-    <script defer>
-        // Inline calendar initialization
-        document.addEventListener('DOMContentLoaded', function() {
+    
 
-    const calendarEl = document.getElementById('calendar');
-
-    const calendar = new FullCalendar.Calendar(calendarEl, {
-
-        initialView: 'timeGridWeek',
-
-        locale: 'fr',
-
-        firstDay: 1,
-
-        allDaySlot: false,
-
-        slotMinTime: "08:00:00",
-        slotMaxTime: "20:00:00",
-
-        nowIndicator: true,
-
-        height: "auto",
-
-        expandRows: true,
-
-        headerToolbar: {
-            left: 'prev,next',
-            center: 'title',
-            right: 'today,timeGridWeek,timeGridDay'
-        },
-
-        events: '/calendar/events/',
-
-        eventTimeFormat: {
-            hour: '2-digit',
-            minute: '2-digit',
-            meridiem: false
-        },
-
-        eventDidMount: function(info){
-
-            info.el.style.boxShadow =
-            "0 4px 12px rgba(0,0,0,0.08)";
-
-        }
-
-    });
-
-    calendar.render();
-
-});
-
-    </script>
+    
 </head>
 <body>
     <aside class="sidebar">
@@ -83,11 +33,10 @@
         
         <!-- Calendrier -->
         <article id="Home" class="panel active">
-            <p class="panel-title">Calendrier</p>
-            <div class="calendrier-content">
-                <div class="card calendrier-card">
-                    <div id="calendar"></div>
-                </div>
+            <div class="moyennestats"></div>
+            <div class="dougnat"></div>
+            <div class="seance">
+                
             </div>
         </article>
 
