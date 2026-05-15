@@ -108,9 +108,11 @@ def calendrier_events(request):
 def Bulletin(request):
     etudiant = Etudiant.objects.get(user=request.user)
     notes=Note.objects.filter(etudiant=etudiant)
+    moyenne = notes.aggregate(Avg('note'))['note__avg']
     return render(request,'bulletin.html',{
         'etudiant':etudiant,
-        'notes':notes
+        'notes':notes,
+        'moyenne':moyenne
     })
 class listeNotes(ListView):
     model = Note

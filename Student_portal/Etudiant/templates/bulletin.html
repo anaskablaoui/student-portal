@@ -5,20 +5,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bulletin de Notes - Vert Royal & Blanc Cassé</title>
-    <style src=" {% static 'stylesEtudiant/bulletin.css' %} "></style>
+    <link rel="stylesheet" href=" {% static 'stylesEtudiant/bulletin.css' %} ">
 </head>
 <body>
 <div class="bulletin-container">
     <div class="bulletin-header">
-        <h1>🌿 BULLETIN DE NOTES</h1>
+        <h1> BULLETIN DE NOTES</h1>
         <div class="subtitle">Lycée Royal Vert - Année scolaire 2025/2026</div>
     </div>
 
     <div class="student-info">
-        <div class="student-detail">👨‍🎓 Élève : <span>Clément Delacroix</span></div>
-        <div class="student-detail">📚 Classe : <span>Première B</span></div>
-        <div class="student-detail">🆔 Matricule : <span>VRT-25098</span></div>
-        <div class="year-badge">📅 Second Semestre</div>
+        <div class="student-detail">Élève : <span> {{etudiant.user.nom}} {{etudiant.user.prenom}}</span></div>
+        <div class="student-detail"> Classe : <span>{{etudiant.groupe}}</span></div>
+        <div class="student-detail"> Matricule : <span>{{etudiant.user.matricule}}</span></div>
+        <div><button class="no-print" onclick="window.print()"> Imprimer</button></div>
+        
     </div>
 
     <div class="notes-table-wrapper">
@@ -27,81 +28,37 @@
                 <tr>
                     <th>Matière</th>
                     <th>Note /20</th>
-                    <th>Coefficient</th>
+                    
                     <th>Appréciation</th>
                 </tr>
             </thead>
             <tbody>
+                
+                {% for note in notes  %}
+                    
+                
+                    
                 <!-- MATHÉMATIQUES -->
                 <tr>
-                    <td><strong>Mathématiques</strong></td>
-                    <td class="note-value"><span class="note-badge">15.5 / 20</span></td>
-                    <td><span class="coef-badge">× 4</span></td>
-                    <td class="appreciation-text">Très bonne maîtrise des concepts</td>
+                    <td><strong> {{note.matiere}} </strong></td>
+                    <td class="note-value"><span class="note-badge">{{note.note}}</span></td>
+                    
+                    <td class="appreciation-text">
+                    {% if note.note > 18 %}
+                        tres bonne note
+
+                    {% elif note.note > 15 %}
+                        bonne note
+
+                    {% elif note.note > 10 %}
+                        note moyenne
+
+                    {% else %}
+                        rattapage
+                    {% endif %}
+                        </td>
                 </tr>
-                <!-- PHYSIQUE-CHIMIE -->
-                <tr>
-                    <td><strong>Physique-Chimie</strong></td>
-                    <td class="note-value"><span class="note-badge">14.0 / 20</span></td>
-                    <td><span class="coef-badge">× 3</span></td>
-                    <td class="appreciation-text">Solide, travail régulier</td>
-                </tr>
-                <!-- FRANÇAIS -->
-                <tr>
-                    <td><strong>Français & Littérature</strong></td>
-                    <td class="note-value"><span class="note-badge">16.0 / 20</span></td>
-                    <td><span class="coef-badge">× 3</span></td>
-                    <td class="appreciation-text">Excellente expression écrite</td>
-                </tr>
-                <!-- ANGLAIS -->
-                <tr>
-                    <td><strong>Anglais</strong></td>
-                    <td class="note-value"><span class="note-badge">17.0 / 20</span></td>
-                    <td><span class="coef-badge">× 2</span></td>
-                    <td class="appreciation-text">Très fluide, vocabulaire riche</td>
-                </tr>
-                <!-- HISTOIRE-GÉO -->
-                <tr>
-                    <td><strong>Histoire-Géographie</strong></td>
-                    <td class="note-value"><span class="note-badge">13.0 / 20</span></td>
-                    <td><span class="coef-badge">× 2</span></td>
-                    <td class="appreciation-text">Bonnes analyses, à approfondir</td>
-                </tr>
-                <!-- PHILOSOPHIE -->
-                <tr>
-                    <td><strong>Philosophie</strong></td>
-                    <td class="note-value"><span class="note-badge">12.5 / 20</span></td>
-                    <td><span class="coef-badge">× 2</span></td>
-                    <td class="appreciation-text">Esprit critique encourageant</td>
-                </tr>
-                <!-- SVT -->
-                <tr>
-                    <td><strong>SVT</strong></td>
-                    <td class="note-value"><span class="note-badge">14.5 / 20</span></td>
-                    <td><span class="coef-badge">× 2</span></td>
-                    <td class="appreciation-text">Très bon travail pratique</td>
-                </tr>
-                <!-- ÉCONOMIE -->
-                <tr>
-                    <td><strong>Sciences Économiques</strong></td>
-                    <td class="note-value"><span class="note-badge">15.0 / 20</span></td>
-                    <td><span class="coef-badge">× 2</span></td>
-                    <td class="appreciation-text">Raisonnement pertinent</td>
-                </tr>
-                <!-- EPS -->
-                <tr>
-                    <td><strong>EPS</strong></td>
-                    <td class="note-value"><span class="note-badge">18.0 / 20</span></td>
-                    <td><span class="coef-badge">× 1</span></td>
-                    <td class="appreciation-text">Excellent investissement</td>
-                </tr>
-                <!-- INFORMATIQUE -->
-                <tr>
-                    <td><strong>Numérique & Informatique</strong></td>
-                    <td class="note-value"><span class="note-badge">16.5 / 20</span></td>
-                    <td><span class="coef-badge">× 1</span></td>
-                    <td class="appreciation-text">Projets créatifs et maîtrisés</td>
-                </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>
@@ -110,13 +67,23 @@
         <div class="avg-label">
             🌿 MOYENNE GÉNÉRALE PONDÉRÉE
         </div>
-        <div class="avg-score">15.08 / 20</div>
-        <div class="mention">🏅 Mention Très Bien - Félicitations</div>
+        <div class="avg-score">{{moyenne}}</div>
+        <div class="mention">
+            {% if moyenne > 18 %}
+                 EXCELLENTE PERFORMANCE
+            {% elif moyenne > 15 %}
+                 bien
+            {% elif moyenne > 10 %}
+                 passable
+            {% else %}
+                 rattapage
+            {% endif %}
+        </div>
     </div>
 
     <div class="bulletin-footer">
-        📖 Bulletin officiel • Résultats par matière avec coefficients • Seuil de réussite : 10/20
-        <br>🌱 Exempt de toute couleur rouge – Harmonie Vert Royal & Blanc Cassé
+         Bulletin officiel • Résultats par matière avec coefficients • Seuil de réussite : 10/20
+        
     </div>
 </div>
 </body>
