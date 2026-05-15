@@ -154,7 +154,7 @@
                                 <th>Matière</th>
                                 <th>Date</th>
                                 <th>Heure</th>
-                                <th>Type</th>
+                                
                             </tr>
                         </thead>
                         <tbody id="absenceTable">
@@ -194,11 +194,9 @@
                     </select>
                     
                     <div class="stat-row">
-                        <div class="stat"><div class="lbl">Moyenne</div></div>
-                        <div class="stat"><div class="lbl">Max</div ></div>
-                        <div class="stat"><div class="lbl">Min</div></div>
+                        
                         <div class="stat"><button onclick="ouvrirStats()" class="btn-valider">Voir les statistiques</button></div>
-                        <div class="stat"><button><a href="{% url 'imprimerBultin' %}">imprimer Bulletin</a></button></div>
+                        <div class="stat"><button class="btn-valider"><a href="{% url 'imprimerBultin' %}">imprimer Bulletin</a></button></div>
                     </div>
                 </div>
                 <div class="card tableau">

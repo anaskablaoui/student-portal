@@ -8,8 +8,51 @@
     <link rel="stylesheet" href="{% static 'stylesProfesseur/style.css' %}">
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
     <script defer src="{% static 'scriptProfesseur/script.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
+    <script defer>
+        fetch(' {% url "professeur:statistiques_groupes" %} ')
+            .then(response => response.json())
+            .then(data => {
 
+        new Chart(document.getElementById('myChart'), {
+            type: 'bar',
+            data: {
+                labels: data.labels,
+                datasets: [{
+                    label: 'Moyenne des groupes',
+                    data: data.moyennes,
+                    borderWidth: 1
+                }]
+            }
+        });
+
+    });
+
+    fetch("{% url 'professeur:doughnut_data' %}")
+.then(response => response.json())
+.then(data => {
+
+    new Chart(document.getElementById('myDoughnutChart'), {
+        type: 'doughnut',
+        data: {
+            labels: data.labels,
+            datasets: [{
+                label: 'Nombre d’absences',
+                data: data.absences,
+                backgroundColor: [
+                    '#FF6384',
+                    '#36A2EB',
+                    '#FFCE56',
+                    '#4BC0C0',
+                    '#9966FF'
+                ]
+            }]
+        }
+    });
+
+});
+    </script>
     
 </head>
 <body>
@@ -33,10 +76,24 @@
         
         <!-- Calendrier -->
         <article id="Home" class="panel active">
-            <div class="moyennestats"></div>
-            <div class="dougnat"></div>
+            <div class="moyennestats">
+                <canvas id="myChart"></canvas>
+            </div>
+            <div class="dougnat">
+                <canvas id="myDoughnutChart"></canvas>
+            </div>
             <div class="seance">
                 
+                {% if sessAujourd %}
+                    {% for sess in sessAjourd %}
+                    {{sess.date}} - {{sess.matiere.nom}} - {{sess.groupe.nom}}
+                {% endfor %}
+                {% else %}
+                    <p>Aucune séance disponible pour aujourd'hui.</p>
+                {% endif %}
+                    
+                
+                    
             </div>
         </article>
 
@@ -51,7 +108,7 @@
                             <label for="absence-session">Séance</label>
                             <select id="absence-session" name="session_id" form="absence-form">
                                 {% for sess in sessions %}
-                                    <option value="{{ sess.id }}" {% if selected_session and sess.id == selected_session.id %}selected{% endif %}>
+                                    <option value="{{ sess.groupe.id }}" {% if selected_session and sess.id == selected_session.id %}selected{% endif %}>
                                         {{ sess.date }} - {{ sess.matiere.nom }} - {{ sess.groupe.nom }}
                                     </option>
                                 {% endfor %}

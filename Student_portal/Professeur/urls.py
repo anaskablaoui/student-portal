@@ -7,5 +7,6 @@ app_name = 'professeur'
 urlpatterns = [
     path('dashboard/', views.dashboard, name='dashboard'),
     path('logout/', authentification.professeurLogout_view, name='logout'),
-    path('sessions-json/', views.calendrier_events, name='sessions_json'),
+    path('statistiques-groupes/',views.statistiques_groupes,name='statistiques_groupes'),
+    path('doughnot-data/', views.doughnat_presance, name='doughnut_data'),  
 ]

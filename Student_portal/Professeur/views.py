@@ -9,6 +9,7 @@ from Administrateur.models import Session,Matiere,Groupe
 from datetime import datetime
 from django.http import JsonResponse
 from django.contrib.auth import update_session_auth_hash
+from django.db.models import Avg
 
 
 @login_required(login_url='login')
@@ -26,6 +27,10 @@ def dashboard(request):
     
     etudiants = Etudiant.objects.filter(groupe__in=professeur.groupe.all()).distinct()
     sessions = Session.objects.filter(groupe__in=professeur.groupe.all()).order_by('date')
+    sess = Session.objects.filter(
+    groupe__in=professeur.groupe.all(),
+    date=datetime.today().date()
+)
     selected_session = None
     form = absenceForm()
     rapportForm = RapportForm()
@@ -147,6 +152,7 @@ def dashboard(request):
         'groupes':groupe,
         'presence':taux_presence,
         'PasswordForm': PasswordForm,
+        'sessAjourd':sess
     })
 
 
@@ -209,35 +215,54 @@ class NoteListView(ListView):
         return Etudiant.objects.filter(groupe__in=professeur.groupe.all())
 
     
-@login_required(login_url='login')
-def calendrier_events(request):
 
-    events = []
+@login_required(login_url='/login/')
+def statistiques_groupes(request):
 
-    sessions = Session.objects.select_related('matiere', 'groupe')
+    groupes = Groupe.objects.all()
 
-    for session in sessions:
+    labels = []
+    moyennes = []
 
-        start = datetime.combine(
-            session.date,
-            session.heure_depart
-        )
+    for groupe in groupes:
 
-        end = datetime.combine(
-            session.date,
-            session.heure_fin
-        )
+        moyenne = Note.objects.filter(
+            etudiant__groupe=groupe
+        ).aggregate(
+            moyenne=Avg('note')
+        )['moyenne']
 
-        events.append({
-            "title": session.matiere.nom,
-            "start": start.isoformat(),
-            "end": end.isoformat(),
+        labels.append(groupe.nom)
+        moyennes.append(round(moyenne or 0, 2))
 
-            
+    data = {
+        'labels': labels,
+        'moyennes': moyennes
+    }
 
-            "extendedProps": {
-                "groupe": session.groupe.nom if session.groupe else "",
-            }
-        })
+    return JsonResponse(data)
 
-    return JsonResponse(events, safe=False)
+@login_required(login_url='/login/')
+def doughnat_presance(request):
+
+    groupes = Groupe.objects.filter(
+        professeurs__user=request.user
+    )
+
+    labels = []
+    absences_data = []
+
+    for groupe in groupes:
+
+        nb_absences = absence.objects.filter(
+            seance__groupe=groupe,
+            status=True
+        ).count()
+
+        labels.append(groupe.nom)
+        absences_data.append(nb_absences)
+
+    return JsonResponse({
+        'labels': labels,
+        'absences': absences_data
+    })
