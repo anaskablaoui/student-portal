@@ -9,6 +9,7 @@
     <link rel="stylesheet" href=" {%static 'stylesEtudiant/style.css'%} ">
     <script defer src="{% static "scriptEtudiant/script.js" %}" ></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script defer>
     document.addEventListener('DOMContentLoaded', function() {
         const calendarEl = document.getElementById('calendar');
@@ -49,6 +50,53 @@
         });
         calendar.render();
     });
+    document.addEventListener('DOMContentLoaded', function() {
+    fetch('{% url "etudiant_stats" %}')
+        .then(res => res.json())
+        .then(data => {
+            const ctx = document.getElementById('notesChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: 'Mes notes /20',
+                        data: data.notes,
+                        backgroundColor: data.notes.map(note =>
+                            note >= 10 ? 'rgba(91, 126, 229, 0.8)' : 'rgba(229, 57, 53, 0.7)'
+                        ),
+                        borderColor: data.notes.map(note =>
+                            note >= 10 ? '#5b7ee5' : '#e53935'
+                        ),
+                        borderWidth: 2,
+                        borderRadius: 8,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: ctx => `Note : ${ctx.raw}/20`
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            min: 0,
+                            max: 20,
+                            ticks: { stepSize: 2 },
+                            grid: { color: 'rgba(116,148,236,0.1)' }
+                        },
+                        x: {
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        });
+});
 </script>
 </head> 
 <body>
@@ -149,6 +197,7 @@
                         <div class="stat"><div class="lbl">Moyenne</div></div>
                         <div class="stat"><div class="lbl">Max</div ></div>
                         <div class="stat"><div class="lbl">Min</div></div>
+                        <div class="stat"><button onclick="ouvrirStats()" class="btn-valider">Voir les statistiques</button></div>
                         <div class="stat"><button><a href="{% url 'imprimerBultin' %}">imprimer Bulletin</a></button></div>
                     </div>
                 </div>
@@ -303,6 +352,17 @@
             </div>
          </article>
         
+         <div id="statsModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); backdrop-filter:blur(4px); z-index:9999; align-items:center; justify-content:center;">
+    <div style="background:#fff; border-radius:16px; padding:32px; width:90%; max-width:600px; position:relative;">
+        
+        <!-- Bouton fermer -->
+        <button onclick="fermerStats()" style="position:absolute; top:16px; right:16px; background:none; border:none; font-size:20px; cursor:pointer;">✕</button>
+        
+        <h2 style="font-size:18px; font-weight:600; color:#3a3a5c; margin-bottom:24px;">📊 Mes notes par matière</h2>
+        
+        <canvas id="notesChart"></canvas>
+    </div>
+</div>
     </main>
 
     <script src="script.js"></script>

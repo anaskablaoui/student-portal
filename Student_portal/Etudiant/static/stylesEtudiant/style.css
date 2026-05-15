@@ -12,7 +12,7 @@
 }
 
 body {
-    background: linear-gradient(135deg, #e8ecff, #c9d6ff);
+    background: linear-gradient(90deg, #ffffff, #0f4c3a);
     display: flex;
     height: 100vh;
     width: 100vw;
@@ -22,7 +22,7 @@ body {
 
 /* ── Sidebar ── */
 .sidebar {
-    background: linear-gradient(180deg, #5b7ee5, #7494ec);
+    background: linear-gradient(180deg, #187258, #092e23);
     width: 220px;
     min-width: 220px;
     height: 100vh;
@@ -131,10 +131,10 @@ main {
 
 /* ── Card ── */
 .card {
-    background: #fff;
+    background: #ffffffb9;
     border-radius: 14px;
-    box-shadow: 0 2px 14px rgba(116, 148, 236, 0.15);
-    border: 1px solid rgba(116, 148, 236, 0.15);
+    box-shadow: 0 2px 14px rgb(35, 34, 34) (116, 148, 236, 0.15);
+    border: 1px solid #092e23(116, 148, 236, 0.15);
 }
 
 /* ── Calendrier ── */
@@ -174,7 +174,7 @@ main {
 .cal-day:hover { background: #e8ecff; }
 
 .cal-day.today {
-    background: #7494ec;
+    background: #0f4c3a;
     color: #fff;
     font-weight: 600;
 }
@@ -211,7 +211,7 @@ main {
 
 .seance-item select,
 .seance-item input {
-    border: 1px solid rgba(116, 148, 236, 0.35);
+    border: 1px solid #092e23(116, 148, 236, 0.35);
     border-radius: 8px;
     padding: 7px 12px;
     font-size: 13px;

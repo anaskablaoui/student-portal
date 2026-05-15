@@ -135,3 +135,13 @@ class messageListView(ListView):
     template_name = 'etudiant.html'
     context_object_name = 'messages'
 
+@login_required(login_url='/login/')
+def statistiques_notes(request):
+    etudiant = Etudiant.objects.get(user=request.user)
+    notes = Note.objects.filter(etudiant=etudiant).select_related('matiere')
+    
+    data = {
+        'labels': [note.matiere.nom for note in notes],
+        'notes': [float(note.note) for note in notes],
+    }
+    return JsonResponse(data)
