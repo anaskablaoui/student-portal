@@ -151,11 +151,7 @@ input, select, textarea { font-family: var(--font-body); }
 
 .sidebar ul li a.nav-link:hover { color: #fff; }
 
-.sidebar ul li:nth-child(1) a::after { content: '📅'; margin-left: auto; font-size: .9rem; }
-.sidebar ul li:nth-child(2) a::after { content: '🔔'; margin-left: auto; font-size: .9rem; }
-.sidebar ul li:nth-child(3) a::after { content: '📊'; margin-left: auto; font-size: .9rem; }
-.sidebar ul li:nth-child(4) a::after { content: '💬'; margin-left: auto; font-size: .9rem; }
-.sidebar ul li:nth-child(5) a::after { content: '👤'; margin-left: auto; font-size: .9rem; }
+
 
 .sidebar form {
   padding: 0 16px;

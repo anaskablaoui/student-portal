@@ -155,11 +155,7 @@ input, select, textarea { font-family: var(--font-body); }
 .sidebar ul li a.nav-link:hover { color: #fff; }
 
 /* Icônes nav */
-.sidebar ul li:nth-child(1) a::after { content: '📅'; margin-left: auto; font-size: .9rem; }
-.sidebar ul li:nth-child(2) a::after { content: '🔔'; margin-left: auto; font-size: .9rem; }
-.sidebar ul li:nth-child(3) a::after { content: '📊'; margin-left: auto; font-size: .9rem; }
-.sidebar ul li:nth-child(4) a::after { content: '💬'; margin-left: auto; font-size: .9rem; }
-.sidebar ul li:nth-child(5) a::after { content: '👤'; margin-left: auto; font-size: .9rem; }
+
 
 /* Logout */
 .sidebar form {
@@ -747,7 +743,7 @@ button[type="submit"]:active {
   cursor: default;
 }
 
-/* Changer mot de passe */
+/* ── Changer mot de passe ───────────────────── */
 .changerPassword {
   grid-column: 1 / -1;
 }
@@ -755,8 +751,72 @@ button[type="submit"]:active {
 .changerPassword .card {
   background: var(--white);
   border-radius: var(--radius-lg);
-  padding: 24px;
+  padding: 28px 32px;
   box-shadow: var(--shadow-md);
+  border: 1px solid rgba(0,106,89,.06);
+}
+
+.changerPassword .card-title::before {
+  content: '🔒';
+  font-size: 1rem;
+  margin-right: 6px;
+}
+
+.changerPassword form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 24px;
+  margin-top: 4px;
+}
+
+.changerPassword form p {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+}
+
+.changerPassword form label {
+  font-size: .78rem;
+  font-weight: 700;
+  color: var(--neutral-500);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+
+/* Classe .input — style unifié pour tous les champs */
+.input,
+.changerPassword form input {
+  width: 100%;
+  background: var(--neutral-50);
+  border: 1.5px solid var(--neutral-200);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  font-size: .88rem;
+  font-family: var(--font-body);
+  color: var(--neutral-700);
+  font-weight: 500;
+  transition: var(--transition);
+}
+
+.input:focus,
+.changerPassword form input:focus {
+  border-color: var(--green-500);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0,106,89,.1);
+  background: var(--white);
+}
+
+.input::placeholder,
+.changerPassword form input::placeholder {
+  color: var(--neutral-300);
+  font-weight: 400;
+}
+
+.changerPassword form button[type="submit"] {
+  grid-column: 1 / -1;
+  justify-self: start;
+  margin-top: 4px;
 }
 
 /* ── Modal stats ────────────────────────────── */
