@@ -8,22 +8,18 @@ class Administrateur(models.Model):
     user = models.OneToOneField(custumUser, on_delete=models.CASCADE)
     niveau_acces = models.IntegerField(default=1)
     
-    
-    
-
     class Meta:
         verbose_name='Administrateur'
         verbose_name_plural='Utilisateur'
         
     
     def __str__(self):
-        return f"{self.nom} {self.prenom}"
+        return f"{self.user.nom} {self.user.prenom}"
 
 class Filier(models.Model):
     id = models.AutoField(primary_key=True)
     nom = models.CharField(max_length=50, unique=True)
     
-
     def __str__(self):
         return self.nom
 

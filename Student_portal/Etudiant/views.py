@@ -69,8 +69,10 @@ def etudiant_dashboard(request):
                 messages.error(request, "Formulaire invalide.")
     
             return redirect('etudiant_dashboard')
-        
-
+    s=0
+    for note in notes:
+        s+=note.note
+    moyenne = s / len(notes) if notes else 0
     return render(request, 'etudiant.html', {
         'etudiant' : etudiant,
         'rapport':rapport,
@@ -80,7 +82,8 @@ def etudiant_dashboard(request):
         'notes': notes,
         'matieres': matieres,
         'presence':taux_presence,
-        'PasswordForm':PasswordForm
+        'PasswordForm':PasswordForm,
+        'moyenne': moyenne
     })
     
 @login_required(login_url='/login/')
@@ -114,28 +117,6 @@ def Bulletin(request):
         'notes':notes,
         'moyenne':moyenne
     })
-class listeNotes(ListView):
-    model = Note
-    template_name = 'etudiant.html'
-    context_object_name = 'notes'
-
-    def get_queryset(self):
-        etudiant = Etudiant.request.user(user=self.request.user)
-        return Note.objects.filter(etudiant=etudiant)
-    
-class absencesListView(ListView):
-    model = absence
-    template_name = 'etudiant.html'
-    context_object_name = 'absences'
-
-    def get_queryset(self):
-        etudiant = Etudiant.request.get(user=self.request.user)
-        return absence.objects.filter(etudiant=etudiant)
-    
-class messageListView(ListView):
-    model = Message
-    template_name = 'etudiant.html'
-    context_object_name = 'messages'
 
 @login_required(login_url='/login/')
 def statistiques_notes(request):

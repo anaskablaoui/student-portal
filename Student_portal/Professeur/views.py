@@ -62,6 +62,8 @@ def dashboard(request):
         elif 'submit_rapport' in request.POST:
             rapportForm = RapportForm(request.POST)
             if rapportForm.is_valid():
+                rapportForm = rapportForm.save(commit=False)
+                rapportForm.professeur = professeur
                 rapportForm.save()
                 messages.success(request, "Rapport envoyé.")
                 return redirect('professeur:dashboard')
@@ -162,59 +164,6 @@ def profile(request):
         'professeur':prof
     })
 
-class EtudiantListView(ListView):
-    model = Etudiant
-    template_name = 'index.html'
-    context_object_name = 'etudiants'
-
-    def dispatch(self, request, *args, **kwargs):
-        if request.user.role != 'professeur':
-            messages.error(request, "Accès refusé. Vous n'êtes pas un professeur.")
-            return redirect('login')
-        try:
-            Professeur.objects.get(user=request.user)
-        except Professeur.DoesNotExist:
-            messages.error(request, "Profil professeur non trouvé. Contactez l'administrateur.")
-            return redirect('login')
-        return super().dispatch(request, *args, **kwargs)
-
-    def get_queryset(self):
-        session_id = self.kwargs.get('session_id')
-        if session_id:
-            session = Session.objects.select_related('groupe').get(id=session_id)
-            return Etudiant.objects.filter(groupe=session.groupe)
-        return Etudiant.objects.none()
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        session_id = self.kwargs.get('session_id')
-        if session_id:
-            context['session'] = Session.objects.select_related(
-                'matiere', 'groupe'
-            ).get(id=session_id)
-        return context
-    
-class NoteListView(ListView):
-    model = Etudiant
-    template_name = 'index.html'
-    context_object_name = 'noteEtudiants'
-    
-    def dispatch(self, request, *args, **kwargs):
-        if request.user.role != 'professeur':
-            messages.error(request, "Accès refusé. Vous n'êtes pas un professeur.")
-            return redirect('login')
-        try:
-            Professeur.objects.get(user=request.user)
-        except Professeur.DoesNotExist:
-            messages.error(request, "Profil professeur non trouvé. Contactez l'administrateur.")
-            return redirect('login')
-        return super().dispatch(request, *args, **kwargs)
-    
-    def get_queryset(self):
-        professeur = Professeur.objects.get(user=self.request.user)
-        return Etudiant.objects.filter(groupe__in=professeur.groupe.all())
-
-    
 
 @login_required(login_url='/login/')
 def statistiques_groupes(request):
